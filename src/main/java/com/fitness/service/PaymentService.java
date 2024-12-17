@@ -56,6 +56,16 @@ public class PaymentService {
         return paymentRepository.countBySubscription_Id(subscriptionId);
     }
 
+    // Поиск платежей по Client.id
+    public List<Payment> findByClientId(Long clientId) {
+        return paymentRepository.findByClient_Id(clientId);
+    }
+
+    // Создание платежа
+    public Payment createPayment(Payment payment) {
+        return paymentRepository.save(payment);
+    }
+
     // Поиск платежей по email клиента
     public List<Payment> findByClientEmail(String email) {
         return paymentRepository.findBySubscription_Client_Email(email);

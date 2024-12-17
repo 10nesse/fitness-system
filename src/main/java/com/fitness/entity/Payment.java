@@ -22,6 +22,11 @@ public class Payment {
     private LocalDateTime paymentDate;
     private Double amount;
 
+    // Связь с клиентом
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
     @OneToOne
     @JoinColumn(name = "subscription_id", nullable = false)
     @JsonIgnoreProperties({"client", "fitnessClass"})

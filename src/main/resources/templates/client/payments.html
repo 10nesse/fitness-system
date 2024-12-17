@@ -3,33 +3,41 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title layout:fragment="title">Мои Платежи</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Font Awesome для иконок (опционально) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content">
   <h2>Мои Платежи</h2>
 
+  <!-- Кнопка "Назад" -->
+  <div class="back-button">
+    <a th:href="@{/web/home}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Назад
+    </a>
+  </div>
+
   <div th:if="${payments != null and !payments.isEmpty()}">
     <table>
       <thead>
       <tr>
-        <th>ID Платежа</th>
         <th>Сумма</th>
         <th>Дата Платежа</th>
-        <th>ID Абонемента</th>
+        <th>Подписка</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="payment : ${payments}">
-        <td th:text="${payment.id}">ID</td>
         <td th:text="${payment.amount}">Сумма</td>
         <td th:text="${#temporals.format(payment.paymentDate, 'yyyy-MM-dd HH:mm')}">Дата Платежа</td>
-        <td th:text="${payment.subscription.id}">ID Абонемента</td>
+        <td th:text="${payment.subscription != null ? payment.subscription.fitnessClass.name : 'N/A'}">Подписка</td>
       </tr>
       </tbody>
     </table>
   </div>
   <div th:if="${payments == null or payments.isEmpty()}">
-    <p>У вас нет совершённых платежей.</p>
+    <p>Нет платежей.</p>
   </div>
 </div>
 </body>

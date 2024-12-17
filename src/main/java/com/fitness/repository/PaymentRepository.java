@@ -14,6 +14,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     // Поиск платежей по ID абонемента
     List<Payment> findBySubscription_Id(Long subscriptionId);
 
+    List<Payment> findByClient_Id(Long clientId);
+
     // Поиск платежей по дате
     List<Payment> findByPaymentDateBetween(LocalDateTime start, LocalDateTime end);
 

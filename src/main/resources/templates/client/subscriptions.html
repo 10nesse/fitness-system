@@ -3,16 +3,25 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title layout:fragment="title">Мои Абонементы</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Font Awesome для иконок (опционально) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content">
   <h2>Мои Абонементы</h2>
 
+  <!-- Кнопка "Назад" -->
+  <div class="back-button">
+    <a th:href="@{/web/home}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Назад
+    </a>
+  </div>
+
   <div th:if="${subscriptions != null and !subscriptions.isEmpty()}">
     <table>
       <thead>
       <tr>
-        <th>ID Абонемента</th>
         <th>Фитнес-Класс</th>
         <th>Дата Начала</th>
         <th>Дата Окончания</th>
@@ -21,17 +30,16 @@
       </thead>
       <tbody>
       <tr th:each="subscription : ${subscriptions}">
-        <td th:text="${subscription.id}">ID</td>
         <td th:text="${subscription.fitnessClass.name}">Фитнес-Класс</td>
-        <td th:text="${subscription.startDate}">Дата Начала</td>
-        <td th:text="${subscription.endDate}">Дата Окончания</td>
+        <td th:text="${#temporals.format(subscription.startDate, 'yyyy-MM-dd')}">Дата Начала</td>
+        <td th:text="${#temporals.format(subscription.endDate, 'yyyy-MM-dd')}">Дата Окончания</td>
         <td th:text="${subscription.price}">Цена</td>
       </tr>
       </tbody>
     </table>
   </div>
   <div th:if="${subscriptions == null or subscriptions.isEmpty()}">
-    <p>У вас нет активных абонементов.</p>
+    <p>Нет активных абонементов.</p>
   </div>
 </div>
 </body>
