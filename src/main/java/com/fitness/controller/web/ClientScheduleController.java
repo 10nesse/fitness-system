@@ -1,44 +1,53 @@
-// src/main/java/com/fitness/controller/web/ClientScheduleController.java
 package com.fitness.controller.web;
 
-import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Schedule;
 import com.fitness.entity.Subscription;
-import com.fitness.service.FitnessClassService;
+import com.fitness.entity.Client;
 import com.fitness.service.ScheduleService;
 import com.fitness.service.SubscriptionService;
+import com.fitness.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/web/client/schedule")
+@RequestMapping("/web/client/schedules")
 public class ClientScheduleController {
 
     private final ScheduleService scheduleService;
     private final SubscriptionService subscriptionService;
-    private final FitnessClassService fitnessClassService;
+    private final ClientService clientService;
 
     @Autowired
     public ClientScheduleController(ScheduleService scheduleService,
                                     SubscriptionService subscriptionService,
-                                    FitnessClassService fitnessClassService) {
+                                    ClientService clientService) {
         this.scheduleService = scheduleService;
         this.subscriptionService = subscriptionService;
-        this.fitnessClassService = fitnessClassService;
+        this.clientService = clientService;
     }
 
-    // Просмотр расписания клиента
     @GetMapping
-    public String viewSchedule(Model model, Authentication authentication) {
-        String email = authentication.getName();
-        List<Subscription> subscriptions = subscriptionService.findByClientEmail(email);
+    public String viewSchedules(Model model, Authentication authentication) {
+        String username = authentication.getName(); // Получаем username
+        Optional<Client> clientOpt = clientService.findByUserUsername(username);
+
+        if (clientOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Клиент не найден");
+            return "client/schedules"; // Шаблон с сообщением об ошибке
+        }
+
+        Client client = clientOpt.get();
+        List<Subscription> subscriptions = subscriptionService.findByClientId(client.getId());
         List<Schedule> schedules = scheduleService.findSchedulesBySubscriptions(subscriptions);
+
         model.addAttribute("schedules", schedules);
-        return "client/schedule";
+        return "client/schedules"; // Шаблон для отображения расписаний
     }
 }

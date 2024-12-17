@@ -1,4 +1,6 @@
 package com.fitness.repository;
+import com.fitness.entity.FitnessClass;
+import com.fitness.entity.Schedule;
 import com.fitness.entity.User;
 
 import com.fitness.entity.Subscription;
@@ -18,6 +20,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     List<Subscription> findByStartDateAfter(LocalDate startDate);
 
     long countByClient_Id(Long clientId);
+
+    List<Schedule> findByFitnessClassIn(List<FitnessClass> fitnessClasses);
 
     boolean existsByClient_Id(Long clientId);
 
