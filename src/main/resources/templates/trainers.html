@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trainers</title>
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Trainers</h1>
+    <a th:href="@{/web/trainers/create}">Add New Trainer</a>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Specialization</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="trainer : ${trainers}">
+            <td th:text="${trainer.id}"></td>
+            <td th:text="${trainer.specialization}"></td>
+            <td th:text="${trainer.email}"></td>
+            <td th:text="${trainer.phoneNumber}"></td>
+            <td th:text="${trainer.user.username}"></td>
+            <td>
+                <a th:href="@{/web/trainers/edit/{id}(id=${trainer.id})}">Edit</a>
+                <a th:href="@{/web/trainers/delete/{id}(id=${trainer.id})}">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<th:block th:replace="layout :: content"/>
+</body>
+</html>

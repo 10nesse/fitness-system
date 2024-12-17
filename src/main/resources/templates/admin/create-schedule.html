@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Schedule</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Create New Schedule</h1>
+
+    <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+
+    <form th:action="@{/web/admin/schedules/create}" th:object="${schedule}" method="post">
+        <!-- Поле для выбора FitnessClass -->
+        <label for="fitnessClass">Fitness Class:</label>
+        <select id="fitnessClass" name="fitnessClassId">
+            <option th:each="fc : ${fitnessClasses}"
+                    th:value="${fc.id}"
+                    th:text="${fc.name}"></option>
+        </select><br/>
+
+        <!-- Поля для StartTime и EndTime -->
+        <label for="startTime">Start Time (YYYY-MM-DDTHH:MM):</label>
+        <input type="datetime-local" id="startTime" th:field="*{startTime}" required/><br/>
+
+        <label for="endTime">End Time (YYYY-MM-DDTHH:MM):</label>
+        <input type="datetime-local" id="endTime" th:field="*{endTime}" required/><br/>
+
+        <button type="submit">Create</button>
+    </form>
+
+    <a th:href="@{/web/admin/schedules}">Back to Schedules</a>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

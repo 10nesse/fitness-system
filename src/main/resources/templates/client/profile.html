@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title layout:fragment="title">Мой Профиль</title>
+</head>
+<body layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <h2>Мой Профиль</h2>
+    <p><strong>Имя:</strong> <span th:text="${client.firstName}">Имя</span></p>
+    <p><strong>Фамилия:</strong> <span th:text="${client.lastName}">Фамилия</span></p>
+    <p><strong>Email:</strong> <span th:text="${client.user.email}">Email</span></p>
+    <p><strong>Телефон:</strong> <span th:text="${client.phoneNumber}">Телефон</span></p>
+    <!-- Добавьте другие поля по необходимости -->
+    <a th:href="@{/web/client/profile/edit}">Редактировать Профиль</a>
+</div>
+</body>
+</html>

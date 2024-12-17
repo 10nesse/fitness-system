@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Trainer</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Edit Trainer</h1>
+
+  <p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"></p>
+
+  <form th:action="@{/web/admin/trainers/edit}" th:object="${trainer}" method="post">
+    <!-- Скрытый ID -->
+    <input type="hidden" th:field="*{id}"/>
+
+    <!-- Имя и Фамилия -->
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" th:field="*{firstName}" required/><br/>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" required/><br/>
+
+    <!-- Выбор пользователя -->
+    <label for="userSelect">Select User:</label>
+    <select id="userSelect" name="userId" required>
+      <option value="">-- Select User --</option>
+      <option th:each="u : ${allUsers}"
+              th:value="${u.id}"
+              th:text="${u.username}"
+              th:selected="${trainer.user.id == u.id}"></option>
+    </select><br/>
+
+    <!-- Специализация, Email, Телефон -->
+    <label for="specialization">Specialization:</label>
+    <input type="text" id="specialization" th:field="*{specialization}" required/><br/>
+
+    <label for="trainerEmail">Trainer Email:</label>
+    <input type="email" id="trainerEmail" th:field="*{email}" required/><br/>
+
+    <label for="phoneNumber">Phone:</label>
+    <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/><br/>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <a th:href="@{/web/admin/trainers}">Back to Trainers</a>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

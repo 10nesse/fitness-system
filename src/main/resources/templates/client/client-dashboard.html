@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title layout:fragment="title">Дашборд Клиента</title>
+</head>
+<body layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <h1>Добро пожаловать, Клиент!</h1>
+    <ul>
+        <li><a th:href="@{/web/client/profile}">Мой Профиль</a></li>
+        <li><a th:href="@{/web/client/classes}">Мои Классы</a></li>
+        <li><a th:href="@{/web/client/schedule}">Расписание</a></li>
+        <li><a th:href="@{/web/client/subscriptions}">Мои Абонементы</a></li>
+        <li><a th:href="@{/web/client/payments}">Мои Платежи</a></li>
+        <!-- Добавьте другие ссылки для клиента по необходимости -->
+    </ul>
+</div>
+</body>
+</html>

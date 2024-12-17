@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <title layout:fragment="title">Мои Платежи</title>
+</head>
+<body layout:decorate="~{layout}">
+<div layout:fragment="content">
+  <h2>Мои Платежи</h2>
+
+  <div th:if="${payments != null and !payments.isEmpty()}">
+    <table>
+      <thead>
+      <tr>
+        <th>ID Платежа</th>
+        <th>Сумма</th>
+        <th>Дата Платежа</th>
+        <th>ID Абонемента</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="payment : ${payments}">
+        <td th:text="${payment.id}">ID</td>
+        <td th:text="${payment.amount}">Сумма</td>
+        <td th:text="${#temporals.format(payment.paymentDate, 'yyyy-MM-dd HH:mm')}">Дата Платежа</td>
+        <td th:text="${payment.subscription.id}">ID Абонемента</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${payments == null or payments.isEmpty()}">
+    <p>У вас нет совершённых платежей.</p>
+  </div>
+</div>
+</body>
+</html>

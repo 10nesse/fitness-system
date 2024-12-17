@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Trainers</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Trainers</h1>
+
+  <p><a th:href="@{/web/home}">Back to Dashboard</a></p>
+  <p><a th:href="@{/web/admin/trainers/create}">Add New Trainer</a></p>
+
+  <div th:if="${trainers != null and trainers.size() > 0}">
+    <table>
+      <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Specialization</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="trainer : ${trainers}">
+        <td th:text="${trainer.firstName}">FirstName</td>
+        <td th:text="${trainer.lastName}">LastName</td>
+        <td th:text="${trainer.user.username}">Username</td>
+        <td th:text="${trainer.specialization}">Specialization</td>
+        <td th:text="${trainer.email}">Email</td>
+        <td th:text="${trainer.phoneNumber}">Phone</td>
+        <td>
+          <a th:href="@{'/web/admin/trainers/edit/' + ${trainer.id}}">Edit</a>
+          <a th:href="@{'/web/admin/trainers/delete/' + ${trainer.id}}" onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${trainers == null or trainers.size() == 0}">
+    <p>No trainers found.</p>
+  </div>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

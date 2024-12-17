@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title layout:fragment="title">Дашборд Тренера</title>
+</head>
+<body layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <h1>Добро пожаловать, Тренер!</h1>
+    <ul>
+        <li><a th:href="@{/web/trainer/schedule}">Моё Расписание</a></li>
+        <li><a th:href="@{/web/trainer/classes}">Управление Классами</a></li>
+        <!-- Другие ссылки для тренера -->
+    </ul>
+</div>
+</body>
+</html>

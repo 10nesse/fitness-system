@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Fitness Classes</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Fitness Classes</h1>
+
+  <p><a th:href="@{/web/home}">Back to Dashboard</a></p>
+  <p><a th:href="@{/web/admin/fitness-classes/create}">Add New Fitness Class</a></p>
+
+  <div th:if="${fitnessClasses != null and fitnessClasses.size() > 0}">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Capacity</th>
+        <th>Trainer</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="fitnessClass : ${fitnessClasses}">
+        <td th:text="${fitnessClass.name}">Name</td>
+        <td th:text="${fitnessClass.description}">Description</td>
+        <td th:text="${fitnessClass.capacity}">Capacity</td>
+        <td th:text="${fitnessClass.trainer.firstName + ' ' + fitnessClass.trainer.lastName}">Trainer</td>
+        <td>
+          <a th:href="@{'/web/admin/fitness-classes/edit/' + ${fitnessClass.id}}">Edit</a>
+          <a th:href="@{'/web/admin/fitness-classes/delete/' + ${fitnessClass.id}}"
+             onclick="return confirm('Are you sure you want to delete this fitness class?')">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${fitnessClasses == null or fitnessClasses.size() == 0}">
+    <p>No fitness classes found.</p>
+  </div>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

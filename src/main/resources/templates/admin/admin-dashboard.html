@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <title layout:fragment="title">Административный Дашборд</title>
+</head>
+<body layout:decorate="~{layout}">
+<div layout:fragment="content">
+  <h1>Добро пожаловать, Администратор!</h1>
+  <ul>
+    <li><a th:href="@{/web/admin/users}">Управление Пользователями</a></li>
+    <li><a th:href="@{/web/admin/clients}">Управление Клиентами</a></li>
+    <li><a th:href="@{/web/admin/trainers}">Управление Тренерами</a></li>
+    <li><a th:href="@{/web/admin/fitness-classes}">Управление Фитнес-Классами</a></li>
+    <li><a th:href="@{/web/admin/subscriptions}">Управление Абонементами</a></li>
+    <li><a th:href="@{/web/admin/payments}">Управление Платежами</a></li>
+    <li><a th:href="@{/web/admin/settings}">Настройки</a></li>
+    <!-- Добавьте другие ссылки для администратора по необходимости -->
+  </ul>
+</div>
+</body>
+</html>

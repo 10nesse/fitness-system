@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clients</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Clients</h1>
+
+    <p><a th:href="@{/web/home}">Back to Dashboard</a></p>
+    <p><a th:href="@{/web/admin/clients/create}">Add New Client</a></p>
+
+    <div th:if="${clients != null and clients.size() > 0}">
+        <table>
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="client : ${clients}">
+                <td th:text="${client.firstName}">FirstName</td>
+                <td th:text="${client.lastName}">LastName</td>
+                <td th:text="${client.user.username}">Username</td>
+                <td th:text="${client.email}">Email</td>
+                <td th:text="${client.phoneNumber}">Phone</td>
+                <td>
+                    <a th:href="@{'/web/admin/clients/edit/' + ${client.id}}">Edit</a>
+                    <a th:href="@{'/web/admin/clients/delete/' + ${client.id}}" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${clients == null or clients.size() == 0}">
+        <p>No clients found.</p>
+    </div>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

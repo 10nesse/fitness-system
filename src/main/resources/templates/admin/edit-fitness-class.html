@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Fitness Class</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Edit Fitness Class</h1>
+
+  <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+
+  <form th:action="@{/web/admin/fitness-classes/edit}" th:object="${fitnessClass}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <!-- Поле для выбора тренера -->
+    <label for="trainer">Trainer:</label>
+    <select id="trainer" name="trainerId">
+      <option th:each="trainer : ${trainers}"
+              th:value="${trainer.id}"
+              th:text="${trainer.firstName + ' ' + trainer.lastName}"
+              th:selected="${trainer.id} == ${fitnessClass.trainer.id}"></option>
+    </select><br/>
+
+    <!-- Поля для имени, описания и вместимости -->
+    <label for="name">Name:</label>
+    <input type="text" id="name" th:field="*{name}" required/><br/>
+
+    <label for="description">Description:</label>
+    <textarea id="description" th:field="*{description}" required></textarea><br/>
+
+    <label for="capacity">Capacity:</label>
+    <input type="number" id="capacity" th:field="*{capacity}" min="1" required/><br/>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <a th:href="@{/web/admin/fitness-classes}">Back to Fitness Classes</a>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

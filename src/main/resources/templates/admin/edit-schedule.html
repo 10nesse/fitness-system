@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Schedule</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Edit Schedule</h1>
+
+  <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+
+  <form th:action="@{/web/admin/schedules/edit}" th:object="${schedule}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label for="fitnessClass">Fitness Class:</label>
+    <select id="fitnessClass" name="fitnessClassId">
+      <option th:each="fc : ${fitnessClasses}"
+              th:value="${fc.id}"
+              th:text="${fc.name}"
+              th:selected="${fc.id} == ${schedule.fitnessClass.id}"></option>
+    </select><br/>
+
+    <label for="startTime">Start Time (YYYY-MM-DDTHH:MM):</label>
+    <input type="datetime-local" id="startTime" th:field="*{startTime}" required/><br/>
+
+    <label for="endTime">End Time (YYYY-MM-DDTHH:MM):</label>
+    <input type="datetime-local" id="endTime" th:field="*{endTime}" required/><br/>
+
+    <button type="submit">Update</button>
+  </form>
+
+  <a th:href="@{/web/admin/schedules}">Back to Schedules</a>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

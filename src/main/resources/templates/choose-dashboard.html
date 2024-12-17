@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Выберите главную страницу</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Выберите главную страницу</h1>
+    <form th:action="@{/web/choose-dashboard}" method="post">
+        <div th:each="role : ${roles}">
+            <input type="radio" th:name="dashboard" th:value="${role}" id="${role}"/>
+            <label th:for="${role}" th:text="${role}">Role</label><br/>
+        </div>
+        <button type="submit">Перейти</button>
+    </form>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <title>Dashboard - Fitness App</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div layout:fragment="content">
+
+  <!-- Навигационное меню с кнопкой Logout -->
+  <header>
+    <nav>
+      <ul>
+        <li><a th:href="@{/web/home}">Главная</a></li>
+        <li sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/web/admin/settings}">Настройки Администратора</a>
+        </li>
+        <li sec:authorize="hasRole('TRAINER')">
+          <a th:href="@{/web/trainer/schedule}">Расписание Тренера</a>
+        </li>
+        <li sec:authorize="hasRole('CLIENT')">
+          <a th:href="@{/web/client/profile}">Профиль Клиента</a>
+        </li>
+        <!-- Кнопка Logout -->
+        <li sec:authorize="isAuthenticated()">
+          <form th:action="@{/web/auth/logout}" method="post" style="display: inline;">
+            <button type="submit" class="logout-button">Выйти</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Основное содержимое дашборда -->
+  <h1>Добро пожаловать, <span th:text="${user.username}">Username</span>!</h1>
+  <p>Email: <span th:text="${user.email}">email@example.com</span></p>
+
+  <!-- Секция для ADMIN -->
+  <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <h2>Административный Дашборд</h2>
+    <ul>
+      <li><a th:href="@{/web/admin/settings}">Настройки Администратора</a></li>
+      <li><a th:href="@{/web/admin/users}">Управление Пользователями</a></li>
+      <!-- Другие административные функции -->
+    </ul>
+  </div>
+
+  <!-- Секция для TRAINER -->
+  <div th:if="${#authorization.expression('hasRole(''TRAINER'')')}">
+    <h2>Дашборг Тренера</h2>
+    <ul>
+      <li><a th:href="@{/web/trainer/schedule}">Расписание Тренера</a></li>
+      <li><a th:href="@{/web/trainer/classes}">Управление Классами</a></li>
+      <!-- Другие функции для тренеров -->
+    </ul>
+  </div>
+
+  <!-- Секция для CLIENT -->
+  <div th:if="${#authorization.expression('hasRole(''CLIENT'')')}">
+    <h2>Дашборг Клиента</h2>
+    <ul>
+      <li><a th:href="@{/web/client/profile}">Профиль Клиента</a></li>
+      <li><a th:href="@{/web/client/classes}">Мои Классы</a></li>
+      <!-- Другие функции для клиентов -->
+    </ul>
+  </div>
+
+  <!-- Общие функции для всех ролей -->
+  <div>
+    <h2>Общие Функции</h2>
+    <ul>
+      <li><a th:href="@{/web/home}">Главная</a></li>
+      <li><a th:href="@{/web/about}">О Нас</a></li>
+      <!-- Другие общие ссылки -->
+    </ul>
+  </div>
+</div>
+</body>
+</html>

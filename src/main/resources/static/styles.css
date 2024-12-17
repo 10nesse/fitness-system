@@ -1,0 +1,10 @@
+.btn-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.btn-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

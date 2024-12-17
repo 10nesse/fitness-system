@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org">
+        <head>
+        <title>Тренер - Главная</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Добро пожаловать, Тренер!</h1>
+    <p>Это ваша главная страница.</p>
+
+    <!-- Пример навигации -->
+    <nav>
+        <ul>
+            <li><a th:href="@{/web/trainer/schedule}">Моё расписание</a></li>
+            <li><a th:href="@{/web/trainer/clients}">Мои клиенты</a></li>
+            <!-- Добавьте другие ссылки по необходимости -->
+        </ul>
+    </nav>
+
+    <!-- Другой контент -->
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>
+</title>
+</head>
+<body>
+
+</body>
+</html>

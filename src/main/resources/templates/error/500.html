@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Ошибка 500</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<th:block th:replace="~{layout :: content}">
+  <div>
+    <h1>Внутренняя ошибка сервера</h1>
+    <p>Произошла ошибка на сервере. Пожалуйста, попробуйте позже.</p>
+  </div>
+</th:block>
+</body>
+</html>

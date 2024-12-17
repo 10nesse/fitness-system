@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit User</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <!-- Подключение Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Edit User</h1>
+
+    <!-- Сообщение об ошибке, если есть -->
+    <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+
+    <!-- Форма редактирования пользователя -->
+    <form th:action="@{/web/admin/users/edit}" th:object="${user}" method="post">
+        <!-- Скрытое поле для ID пользователя -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <!-- Поле для Username -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" th:field="*{username}" required/><br/>
+
+        <!-- Поле для нового пароля -->
+        <label for="password">New Password (leave blank if not changing):</label>
+        <input type="password" id="password" th:field="*{password}"/><br/>
+
+        <!-- Поле для Email -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{email}" required/><br/>
+
+        <!-- Поле для ролей с использованием мультиселекта -->
+        <label for="roles">Roles:</label>
+        <select id="roles" name="roleNames" multiple size="5">
+            <option th:each="role : ${allRoles}"
+                    th:value="${role.name}"
+                    th:text="${role.displayName}"
+                    th:selected="${user.roles.contains(role)}"></option>
+        </select><br/>
+
+        <!-- Кнопка для обновления -->
+        <button type="submit">Update</button>
+    </form>
+
+    <!-- Ссылка для возврата к списку пользователей -->
+    <a th:href="@{/web/admin/users}">Back to Users</a>
+</div>
+
+<!-- Вставка содержимого в общий шаблон layout.html -->
+<th:block th:replace="~{layout :: content}"/>
+
+<!-- Подключение jQuery и Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#roles').select2({
+            placeholder: "Select roles",
+            allowClear: true
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Schedules</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:fragment="content">
+    <h1>Schedules</h1>
+
+    <p><a th:href="@{/web/home}">Back to Dashboard</a></p>
+    <p><a th:href="@{/web/admin/schedules/create}">Add New Schedule</a></p>
+
+    <div th:if="${schedules != null and schedules.size() > 0}">
+        <table>
+            <thead>
+            <tr>
+                <th>Fitness Class</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="schedule : ${schedules}">
+                <td th:text="${schedule.fitnessClass.name}">FitnessClassName</td>
+                <td th:text="${schedule.startTime}">Start</td>
+                <td th:text="${schedule.endTime}">End</td>
+                <td>
+                    <a th:href="@{'/web/admin/schedules/edit/' + ${schedule.id}}">Edit</a>
+                    <a th:href="@{'/web/admin/schedules/delete/' + ${schedule.id}}" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${schedules == null or schedules.size() == 0}">
+        <p>No schedules found.</p>
+    </div>
+</div>
+<th:block th:replace="~{layout :: content}"/>
+</body>
+</html>

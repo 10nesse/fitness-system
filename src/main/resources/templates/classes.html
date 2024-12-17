@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Fitness Classes</title>
+</head>
+<body>
+<div th:fragment="content">
+  <h1>Fitness Classes</h1>
+  <a th:href="@{/web/classes/create}">Add New Class</a>
+  <table border="1">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Capacity</th>
+      <th>Trainer</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="fc : ${classes}">
+      <td th:text="${fc.id}"></td>
+      <td th:text="${fc.name}"></td>
+      <td th:text="${fc.description}"></td>
+      <td th:text="${fc.capacity}"></td>
+      <td th:text="${fc.trainer.user.username}"></td>
+      <td>
+        <a th:href="@{/web/classes/edit/{id}(id=${fc.id})}">Edit</a>
+        <a th:href="@{/web/classes/delete/{id}(id=${fc.id})}">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<th:block th:replace="layout :: content"/>
+</body>
+</html>
