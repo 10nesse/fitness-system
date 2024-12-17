@@ -56,11 +56,13 @@ public class WebClientController {
             return "admin/create-client";
         }
 
-        client.setUser(userOpt.get());
+        User user = userOpt.get();
+        client.setUser(user);
+        client.setEmail(user.getEmail()); // Устанавливаем email из User
+
         clientService.createClient(client);
         return "redirect:/web/admin/clients";
     }
-
 
     @GetMapping("/edit/{id}")
     public String editClientForm(@PathVariable Long id, Model model) {
@@ -90,7 +92,10 @@ public class WebClientController {
             return "admin/edit-client";
         }
 
-        client.setUser(userOpt.get());
+        User user = userOpt.get();
+        client.setUser(user);
+        client.setEmail(user.getEmail()); // Устанавливаем email из User
+
         clientService.updateClient(client);
 
         return "redirect:/web/admin/clients";
