@@ -27,6 +27,10 @@ public class UserService implements UserDetailsService {
 
     }
 
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
 
     // Метод для регистрации нового пользователя
     public User registerNewUser(User user, Set<String> roleNames) {
