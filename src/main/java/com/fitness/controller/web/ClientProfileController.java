@@ -1,8 +1,6 @@
-// src/main/java/com/fitness/controller/web/ClientProfileController.java
 package com.fitness.controller.web;
 
 import com.fitness.entity.Client;
-import com.fitness.entity.User;
 import com.fitness.service.ClientService;
 import com.fitness.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +28,8 @@ public class ClientProfileController {
     // Просмотр профиля клиента
     @GetMapping
     public String viewProfile(Model model, Authentication authentication) {
-        String email = authentication.getName();
-        Client client = clientService.findByEmail(email)
+        String username = authentication.getName(); // Получаем username
+        Client client = clientService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         model.addAttribute("client", client);
         return "client/profile";
@@ -40,8 +38,8 @@ public class ClientProfileController {
     // Форма редактирования профиля
     @GetMapping("/edit")
     public String editProfileForm(Model model, Authentication authentication) {
-        String email = authentication.getName();
-        Client client = clientService.findByEmail(email)
+        String username = authentication.getName();
+        Client client = clientService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         model.addAttribute("client", client);
         return "client/edit-profile";
@@ -59,8 +57,8 @@ public class ClientProfileController {
             return "client/edit-profile";
         }
 
-        String email = authentication.getName();
-        Client existingClient = clientService.findByEmail(email)
+        String username = authentication.getName();
+        Client existingClient = clientService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
         // Обновление полей

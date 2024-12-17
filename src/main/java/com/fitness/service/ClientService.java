@@ -32,6 +32,11 @@ public class ClientService {
         return clientRepository.findByUser_Email(email);
     }
 
+    // Добавьте этот метод для поиска клиента по username
+    public Optional<Client> findByUserUsername(String username) {
+        return clientRepository.findByUser_Username(username);
+    }
+
     public Client saveClient(Client client) {
         return clientRepository.save(client);
     }

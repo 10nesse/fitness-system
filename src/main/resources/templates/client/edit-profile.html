@@ -15,10 +15,11 @@
     <label for="lastName">Фамилия:</label>
     <input type="text" id="lastName" th:field="*{lastName}" required /><br/>
 
+    <!-- Отображение Email (только для просмотра) -->
+    <p><strong>Email:</strong> <span th:text="${client.user.email}">Email</span></p>
+
     <label for="phoneNumber">Телефон:</label>
     <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required /><br/>
-
-    <!-- Добавьте другие поля по необходимости -->
 
     <button type="submit">Сохранить</button>
   </form>

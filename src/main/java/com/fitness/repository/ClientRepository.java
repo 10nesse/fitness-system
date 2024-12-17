@@ -14,6 +14,9 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findByUser_Email(String email);
 
+    // Добавьте этот метод для поиска клиента по username
+    Optional<Client> findByUser_Username(String username);
+
     @Modifying
     @Query("UPDATE Client c SET c.firstName = :firstName, c.lastName = :lastName, c.email = :email, c.phoneNumber = :phoneNumber, c.user = :user WHERE c.id = :id")
     int updateClient(Long id, String firstName, String lastName, String email, String phoneNumber, com.fitness.entity.User user);
