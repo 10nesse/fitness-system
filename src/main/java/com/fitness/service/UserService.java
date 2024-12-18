@@ -32,6 +32,8 @@ public class UserService implements UserDetailsService {
     }
 
 
+
+
     // Метод для регистрации нового пользователя
     public User registerNewUser(User user, Set<String> roleNames) {
         Set<Role> roles = roleNames.stream()

@@ -2,6 +2,7 @@
 package com.fitness.service;
 
 import com.fitness.entity.FitnessClass;
+import com.fitness.entity.Trainer;
 import com.fitness.repository.FitnessClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,18 @@ public class FitnessClassService {
 
     public FitnessClass saveFitnessClass(FitnessClass fitnessClass) {
         return fitnessClassRepository.save(fitnessClass);
+    }
+
+    // Поиск фитнес-классов по тренеру
+    public List<FitnessClass> findByTrainer(Trainer trainer) {
+        return fitnessClassRepository.findByTrainer(trainer);
+    }
+
+
+
+    // Поиск фитнес-класса по ID и тренеру
+    public Optional<FitnessClass> findByIdAndTrainer(Long id, Trainer trainer) {
+        return fitnessClassRepository.findByIdAndTrainer(id, trainer);
     }
 
     public Optional<FitnessClass> getFitnessClassById(Long id) {

@@ -1,5 +1,6 @@
 package com.fitness.service;
 
+import com.fitness.entity.Client;
 import com.fitness.entity.Trainer;
 import com.fitness.entity.User;
 import com.fitness.repository.TrainerRepository;
@@ -18,6 +19,10 @@ public class TrainerService {
     public TrainerService(TrainerRepository trainerRepository, UserRepository userRepository) {
         this.trainerRepository = trainerRepository;
         this.userRepository = userRepository;
+    }
+
+    public Optional<Client> findByUserUsername(String username) {
+        return trainerRepository.findByUser_Username(username);
     }
 
     public List<Trainer> getAllTrainers() {

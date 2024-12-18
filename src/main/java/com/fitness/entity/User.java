@@ -3,6 +3,8 @@ package com.fitness.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -31,6 +33,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
+    // Связь с Trainer (если пользователь является тренером)
+    @Setter
+    @Getter
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Trainer trainer;
+
 
     // Удаляем @OneToOne(mappedBy = "user") для Client и Trainer.
     // Пусть у User не будет обратных ссылок.

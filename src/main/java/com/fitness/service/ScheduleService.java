@@ -3,6 +3,7 @@ package com.fitness.service;
 import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Schedule;
 import com.fitness.entity.Subscription;
+import com.fitness.entity.Trainer;
 import com.fitness.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,32 @@ public class ScheduleService {
 
     public List<Schedule> findByFitnessClassId(Long fitnessClassId) {
         return scheduleRepository.findByFitnessClass_Id(fitnessClassId);
+
+    }
+
+    // Поиск расписаний по фитнес-классам
+    public List<Schedule> findByFitnessClasses(List<FitnessClass> fitnessClasses) {
+        return scheduleRepository.findByFitnessClassIn(fitnessClasses);
+    }
+
+    // Поиск расписания по ID
+    public Optional<Schedule> findById(Long id) {
+        return scheduleRepository.findById(id);
+    }
+
+    // Удаление расписания по ID
+    public void deleteById(Long id) {
+        scheduleRepository.deleteById(id);
+    }
+
+    // Поиск расписания по ID и тренеру
+    public Optional<Schedule> findByIdAndTrainer(Long id, Trainer trainer) {
+        return scheduleRepository.findByIdAndFitnessClass_Trainer(id, trainer);
+    }
+
+    // Поиск всех расписаний тренера
+    public List<Schedule> findByTrainer(Trainer trainer) {
+        return scheduleRepository.findByFitnessClass_Trainer(trainer);
     }
 
     public List<Schedule> findSchedulesBySubscriptions(List<Subscription> subscriptions) {
