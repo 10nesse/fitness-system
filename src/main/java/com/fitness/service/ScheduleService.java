@@ -39,6 +39,16 @@ public class ScheduleService {
 
     }
 
+    public List<Schedule> findByFitnessClass(FitnessClass fitnessClass) {
+        return scheduleRepository.findByFitnessClass(fitnessClass);
+    }
+
+
+
+    public List<Schedule> findSchedulesByFitnessClasses(List<FitnessClass> fitnessClasses) {
+        return scheduleRepository.findByFitnessClassIn(fitnessClasses);
+    }
+
     // Поиск расписаний по фитнес-классам
     public List<Schedule> findByFitnessClasses(List<FitnessClass> fitnessClasses) {
         return scheduleRepository.findByFitnessClassIn(fitnessClasses);
@@ -81,4 +91,6 @@ public class ScheduleService {
     public List<Schedule> findByTrainerAndPeriod(Long trainerId, LocalDateTime start, LocalDateTime end) {
         return scheduleRepository.findByFitnessClass_Trainer_IdAndStartTimeBetween(trainerId, start, end);
     }
+
+
 }

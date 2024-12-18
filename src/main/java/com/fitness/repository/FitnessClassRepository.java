@@ -16,4 +16,6 @@ public interface FitnessClassRepository extends JpaRepository<FitnessClass, Long
     List<FitnessClass> findDistinctBySchedules_StartTimeBetween(LocalDateTime start, LocalDateTime end);
     List<FitnessClass> findByTrainer(Trainer trainer);
     Optional<FitnessClass> findByIdAndTrainer(Long id, Trainer trainer);
+    Optional<FitnessClass> findByTrainerUserUsername(String username);
+
 }

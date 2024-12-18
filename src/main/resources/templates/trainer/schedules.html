@@ -2,25 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title layout:fragment="title">Мои Расписания</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <title layout:fragment="title">Расписание</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <!-- Подключение Font Awesome для иконок (опционально) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content">
-    <h1>Мои Расписания</h1>
+    <h1>Расписание</h1>
 
-    <!-- Кнопка "Назад" -->
-    <p><a th:href="@{/web/home}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Назад
-    </a></p>
+    <!-- Кнопки навигации -->
+    <p>
+        <a th:href="@{/web/home}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        <a th:href="@{/web/trainer/schedules/create}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить Расписание
+        </a>
+    </p>
 
-    <!-- Кнопка "Добавить новое расписание" -->
-    <p><a th:href="@{/web/trainer/schedules/create}" class="btn btn-primary">
-        <i class="fas fa-plus"></i> Добавить Новое Расписание
-    </a></p>
+    <!-- Сообщение об ошибке -->
+    <div th:if="${errorMessage != null}">
+        <p style="color:red" th:text="${errorMessage}"></p>
+    </div>
 
+    <!-- Таблица расписаний -->
     <div th:if="${schedules != null and !schedules.isEmpty()}">
         <table>
             <thead>
@@ -40,10 +46,9 @@
                     <a th:href="@{'/web/trainer/schedules/edit/' + ${schedule.id}}" class="btn btn-warning">
                         <i class="fas fa-edit"></i> Редактировать
                     </a>
-                    <a th:href="@{'/web/trainer/schedules/delete/' + ${schedule.id}}"
-                       onclick="return confirm('Вы уверены, что хотите удалить это расписание?')"
-                       class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Удалить
+                    <a th:href="@{'/web/trainer/schedules/delete/' + ${schedule.id}}" class="btn btn-danger"
+                       onclick="return confirm('Вы уверены, что хотите удалить это расписание?')">
+                        <i class="fas fa-trash-alt"></i> Удалить
                     </a>
                 </td>
             </tr>

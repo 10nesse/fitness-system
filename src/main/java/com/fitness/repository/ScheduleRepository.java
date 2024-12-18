@@ -21,6 +21,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     // Поиск всех расписаний тренера
     List<Schedule> findByFitnessClass_Trainer(Trainer trainer);
 
+    List<Schedule> findByFitnessClass(FitnessClass fitnessClass);
 
 
 

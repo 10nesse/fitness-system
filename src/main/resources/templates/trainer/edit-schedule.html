@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title layout:fragment="title">Редактировать Расписание</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Font Awesome для иконок (опционально) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,29 +12,25 @@
   <h1>Редактировать Расписание</h1>
 
   <!-- Сообщение об ошибке -->
-  <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+  <div th:if="${errorMessage != null}">
+    <p style="color:red" th:text="${errorMessage}"></p>
+  </div>
 
   <form th:action="@{/web/trainer/schedules/edit}" th:object="${schedule}" method="post">
     <input type="hidden" th:field="*{id}"/>
 
+    <!-- Фитнес-Класс (не редактируемый, т.к. уже привязан к тренеру) -->
     <label for="fitnessClass">Фитнес-Класс:</label>
-    <select id="fitnessClass" name="fitnessClassId" required>
-      <option value="">Выберите Фитнес-Класс</option>
-      <option th:each="fc : ${fitnessClasses}"
-              th:value="${fc.id}"
-              th:text="${fc.name}"
-              th:selected="${fc.id} == ${schedule.fitnessClass.id}"></option>
-    </select><br/>
+    <input type="text" id="fitnessClass" th:value="${fitnessClass.name}" readonly/><br/>
 
+    <!-- Поля для StartTime и EndTime -->
     <label for="startTime">Время Начала:</label>
     <input type="datetime-local" id="startTime" th:field="*{startTime}" required/><br/>
 
     <label for="endTime">Время Окончания:</label>
     <input type="datetime-local" id="endTime" th:field="*{endTime}" required/><br/>
 
-    <button type="submit" class="btn btn-success">
-      <i class="fas fa-save"></i> Сохранить
-    </button>
+    <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Сохранить Изменения</button>
   </form>
 
   <p><a th:href="@{/web/trainer/schedules}" class="btn btn-secondary">

@@ -26,7 +26,9 @@ public class FitnessClassService {
         return fitnessClassRepository.findByTrainer(trainer);
     }
 
-
+    public Optional<FitnessClass> findByTrainerUserUsername(String username) {
+        return fitnessClassRepository.findByTrainerUserUsername(username);
+    }
 
     // Поиск фитнес-класса по ID и тренеру
     public Optional<FitnessClass> findByIdAndTrainer(Long id, Trainer trainer) {
