@@ -16,7 +16,10 @@
         <a class="nav-link" th:href="@{/web/client/subscription-schedules}">Расписания по Абонементам</a>
         <a class="nav-link" th:href="@{/web/client/schedules}">Мое Расписание</a>
         <a class="nav-link" th:href="@{/web/client/subscriptions}">Мои Абонементы</a>
-        <a class="nav-link text-danger" th:href="@{/logout}">Выйти</a>
+        <form th:action="@{/web/auth/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger nav-link text-danger">Выйти</button>
+        </form>
+
     </nav>
 </div>
 

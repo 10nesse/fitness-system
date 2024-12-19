@@ -3,26 +3,38 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title layout:fragment="title">Мой Профиль</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body layout:decorate="~{layout}">
-<div layout:fragment="content">
-    <h2>Мой Профиль</h2>
+<div layout:fragment="content" class="container mt-5">
+    <h1 class="mb-4">Мой Профиль</h1>
 
     <!-- Кнопка "Назад" -->
-    <div class="back-button">
+    <div class="mb-3">
         <a th:href="@{/web/home}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Назад
         </a>
     </div>
 
-    <p><strong>Имя:</strong> <span th:text="${client.firstName}">Имя</span></p>
-    <p><strong>Фамилия:</strong> <span th:text="${client.lastName}">Фамилия</span></p>
-    <p><strong>Email:</strong> <span th:text="${client.user.email}">Email</span></p>
-    <p><strong>Телефон:</strong> <span th:text="${client.phoneNumber}">Телефон</span></p>
-    <!-- Добавьте другие поля по необходимости -->
+    <!-- Информация о профиле -->
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Имя:</strong> <span th:text="${client.firstName}">Имя</span></p>
+            <p><strong>Фамилия:</strong> <span th:text="${client.lastName}">Фамилия</span></p>
+            <p><strong>Email:</strong> <span th:text="${client.user.email}">Email</span></p>
+            <p><strong>Телефон:</strong> <span th:text="${client.phoneNumber}">Телефон</span></p>
+        </div>
+    </div>
 
-    <a th:href="@{/web/client/profile/edit}">Редактировать Профиль</a><br/>
-    <a th:href="@{/web/client/profile/change-password}">Изменить Пароль</a>
+    <!-- Действия -->
+    <div class="mt-3">
+        <a th:href="@{/web/client/profile/edit}" class="btn btn-primary">Редактировать Профиль</a>
+        <a th:href="@{/web/client/profile/change-password}" class="btn btn-warning">Изменить Пароль</a>
+    </div>
 </div>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
