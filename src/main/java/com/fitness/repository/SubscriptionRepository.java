@@ -1,9 +1,6 @@
 package com.fitness.repository;
-import com.fitness.entity.FitnessClass;
-import com.fitness.entity.Schedule;
-import com.fitness.entity.User;
+import com.fitness.entity.*;
 
-import com.fitness.entity.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.time.LocalDate;
@@ -24,6 +21,11 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     List<Schedule> findByFitnessClassIn(List<FitnessClass> fitnessClasses);
 
     boolean existsByClient_Id(Long clientId);
+
+    long countBySchedule_Id(Long scheduleId);
+
+    boolean existsByClientAndSchedule(Client client, Schedule schedule);
+
 
 
 

@@ -1,11 +1,15 @@
 package com.fitness.service;
 
+import com.fitness.dto.ScheduleWithCapacityDTO;
 import com.fitness.dto.ScheduleWithClientsDTO;
 import com.fitness.entity.*;
+import com.fitness.repository.RegistrationRepository;
 import com.fitness.repository.ScheduleRepository;
+import com.fitness.repository.SubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +21,13 @@ public class ScheduleService {
     private ScheduleRepository scheduleRepository;
 
     @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
     private FitnessClassService fitnessClassService;
+
+    @Autowired
+    private RegistrationRepository registrationRepository;
 
     /**
      * Сохранение или обновление расписания
@@ -127,6 +137,53 @@ public class ScheduleService {
     public List<Schedule> findByTrainerAndPeriod(Long trainerId, LocalDateTime start, LocalDateTime end) {
         return scheduleRepository.findByFitnessClass_Trainer_IdAndStartTimeBetween(trainerId, start, end);
     }
+
+    public int getRegisteredClientsCount(Long scheduleId) {
+        return (int) subscriptionRepository.countBySchedule_Id(scheduleId);
+    }
+
+    public List<ScheduleWithCapacityDTO> getSchedulesWithCapacity(List<Schedule> schedules) {
+        return schedules.stream().map(schedule -> {
+            int registeredCount = (int) registrationRepository.countBySchedule(schedule);
+            int capacity = schedule.getFitnessClass().getCapacity();
+            return new ScheduleWithCapacityDTO(schedule, registeredCount, capacity);
+        }).collect(Collectors.toList());
+    }
+
+    public List<Schedule> findSchedulesByClient(Client client) {
+        List<Registration> registrations = registrationRepository.findByClient(client);
+        return registrations.stream()
+                .map(Registration::getSchedule)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+    public boolean registerClientToSchedule(Client client, Schedule schedule) {
+        // Проверка, существует ли уже запись
+        if (registrationRepository.existsByClientAndSchedule(client, schedule)) {
+            throw new IllegalStateException("Вы уже записаны на это занятие.");
+        }
+
+        int registered = (int) registrationRepository.countBySchedule(schedule);
+        int capacity = schedule.getFitnessClass().getCapacity();
+
+        if (registered >= capacity) {
+            throw new IllegalStateException("Нет доступных мест на это занятие.");
+        }
+
+        Registration registration = new Registration();
+        registration.setClient(client);
+        registration.setSchedule(schedule);
+
+        registrationRepository.save(registration);
+        return true;
+    }
+
+
+
 
 
 }

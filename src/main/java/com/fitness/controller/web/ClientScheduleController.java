@@ -1,5 +1,7 @@
 package com.fitness.controller.web;
 
+import com.fitness.dto.ScheduleWithCapacityDTO;
+import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Schedule;
 import com.fitness.entity.Subscription;
 import com.fitness.entity.Client;
@@ -11,19 +13,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/web/client/schedules")
+@RequestMapping("/web/client")
 public class ClientScheduleController {
-
-    private static final Logger log = LoggerFactory.getLogger(ClientScheduleController.class);
 
     private final ScheduleService scheduleService;
     private final SubscriptionService subscriptionService;
@@ -38,26 +37,63 @@ public class ClientScheduleController {
         this.clientService = clientService;
     }
 
-    @GetMapping
-    public String viewSchedules(Model model, Authentication authentication) {
-        String username = authentication.getName(); // Получаем username
-        log.debug("Просмотр расписаний для пользователя: {}", username);
-        Optional<Client> clientOpt = clientService.findByUserUsername(username);
+    /**
+     * Моё расписание - занятия, на которые клиент уже записан
+     */
+    @GetMapping("/schedules")
+    public String viewMySchedules(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        Client client = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Клиент не найден"));
 
-        if (clientOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Клиент не найден");
-            log.warn("Клиент с username '{}' не найден", username);
-            return "client/schedules"; // Шаблон с сообщением об ошибке
+        List<Schedule> schedules = scheduleService.findSchedulesByClient(client);
+        List<ScheduleWithCapacityDTO> schedulesWithCapacity = scheduleService.getSchedulesWithCapacity(schedules);
+
+        model.addAttribute("schedules", schedulesWithCapacity);
+        return "client/schedules";
+    }
+
+    /**
+     * Расписания по абонементам - доступные занятия для клиента
+     */
+    @GetMapping("/subscription-schedules")
+    public String viewSubscriptionSchedules(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        Client client = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Клиент не найден"));
+
+        List<Subscription> subscriptions = subscriptionService.findByClientId(client.getId());
+        List<FitnessClass> fitnessClasses = subscriptions.stream()
+                .map(Subscription::getFitnessClass)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Schedule> schedules = scheduleService.findByFitnessClasses(fitnessClasses);
+        List<ScheduleWithCapacityDTO> schedulesWithCapacity = scheduleService.getSchedulesWithCapacity(schedules);
+
+        model.addAttribute("schedules", schedulesWithCapacity);
+        return "client/subscription-schedules";
+    }
+
+    /**
+     * Регистрация на занятие
+     */
+    @PostMapping("/subscription-schedules/register/{scheduleId}")
+    public String registerToSubscriptionSchedule(@PathVariable Long scheduleId, Authentication authentication, Model model) {
+        String username = authentication.getName();
+        Client client = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Клиент не найден"));
+
+        Schedule schedule = scheduleService.getScheduleById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Расписание не найдено"));
+
+        try {
+            scheduleService.registerClientToSchedule(client, schedule);
+            model.addAttribute("successMessage", "Вы успешно записались на занятие.");
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
         }
 
-        Client client = clientOpt.get();
-        log.debug("Найден клиент: {}", client);
-        List<Subscription> subscriptions = subscriptionService.findByClientId(client.getId());
-        log.debug("Найдено подписок: {}", subscriptions.size());
-        List<Schedule> schedules = scheduleService.findSchedulesBySubscriptions(subscriptions);
-        log.debug("Найдено расписаний: {}", schedules.size());
-
-        model.addAttribute("schedules", schedules);
-        return "client/schedules"; // Шаблон для отображения расписаний
+        return viewSubscriptionSchedules(model, authentication);
     }
 }

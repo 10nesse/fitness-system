@@ -3,6 +3,7 @@ package com.fitness.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,8 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 @Data
+@EqualsAndHashCode(exclude = {"trainer"})
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
