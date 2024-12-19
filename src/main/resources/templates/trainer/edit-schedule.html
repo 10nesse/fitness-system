@@ -1,39 +1,50 @@
+<!-- src/main/resources/templates/trainer/edit-schedule.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <title layout:fragment="title">Редактировать Расписание</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Bootstrap (опционально) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Подключение Font Awesome для иконок (опционально) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body layout:decorate="~{layout}">
-<div layout:fragment="content">
+<div layout:fragment="content" class="container mt-5">
   <h1>Редактировать Расписание</h1>
 
   <!-- Сообщение об ошибке -->
   <div th:if="${errorMessage != null}">
-    <p style="color:red" th:text="${errorMessage}"></p>
+    <div class="alert alert-danger" th:text="${errorMessage}"></div>
   </div>
 
-  <form th:action="@{/web/trainer/schedules/edit}" th:object="${schedule}" method="post">
-    <input type="hidden" th:field="*{id}"/>
-
-    <!-- Фитнес-Класс (не редактируемый, т.к. уже привязан к тренеру) -->
-    <label for="fitnessClass">Фитнес-Класс:</label>
-    <input type="text" id="fitnessClass" th:value="${fitnessClass.name}" readonly/><br/>
+  <form th:action="@{/web/trainer/schedules/edit/{id}(id=${schedule.id})}" th:object="${schedule}" method="post">
+    <!-- Выбор Фитнес-Класса -->
+    <div class="mb-3">
+      <label for="fitnessClass" class="form-label">Фитнес-Класс:</label>
+      <select id="fitnessClass" th:field="*{fitnessClass.id}" class="form-select" required>
+        <option value="" disabled>Выберите фитнес-класс</option>
+        <option th:each="fc : ${fitnessClasses}" th:value="${fc.id}" th:text="${fc.name}"
+                th:selected="${fc.id} == ${schedule.fitnessClass.id}"></option>
+      </select>
+    </div>
 
     <!-- Поля для StartTime и EndTime -->
-    <label for="startTime">Время Начала:</label>
-    <input type="datetime-local" id="startTime" th:field="*{startTime}" required/><br/>
+    <div class="mb-3">
+      <label for="startTime" class="form-label">Время Начала:</label>
+      <input type="datetime-local" id="startTime" th:field="*{startTime}" class="form-control" required/>
+    </div>
 
-    <label for="endTime">Время Окончания:</label>
-    <input type="datetime-local" id="endTime" th:field="*{endTime}" required/><br/>
+    <div class="mb-3">
+      <label for="endTime" class="form-label">Время Окончания:</label>
+      <input type="datetime-local" id="endTime" th:field="*{endTime}" class="form-control" required/>
+    </div>
 
     <button type="submit" class="btn btn-warning"><i class="fas fa-save"></i> Сохранить Изменения</button>
   </form>
 
-  <p><a th:href="@{/web/trainer/schedules}" class="btn btn-secondary">
+  <p class="mt-3"><a th:href="@{/web/trainer/schedules}" class="btn btn-secondary">
     <i class="fas fa-arrow-left"></i> Назад к Расписаниям
   </a></p>
 </div>

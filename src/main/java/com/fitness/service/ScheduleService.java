@@ -49,7 +49,6 @@ public class ScheduleService {
         return scheduleRepository.findByFitnessClassIn(fitnessClasses);
     }
 
-    // Поиск расписаний по фитнес-классам
     public List<Schedule> findByFitnessClasses(List<FitnessClass> fitnessClasses) {
         return scheduleRepository.findByFitnessClassIn(fitnessClasses);
     }

@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     boolean existsByUser(User user);
     boolean existsByEmail(String email);
-    // Добавьте этот метод для поиска клиента по username
-    Optional<Client> findByUser_Username(String username);
     // Добавлен метод для поиска тренера по username пользователя
     Optional<Trainer> findByUserUsername(String username);
 }
