@@ -2,6 +2,8 @@ package com.fitness.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -11,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"user"})
-
 public class Trainer {
 
     @Id
@@ -20,14 +21,14 @@ public class Trainer {
 
     private String firstName;
     private String lastName;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Не каскадируем и не удаляем User при удалении Trainer
-
     private String specialization;
     private String email;
     private String phoneNumber;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление пользователя
+    private User user;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FitnessClass> fitnessClasses;

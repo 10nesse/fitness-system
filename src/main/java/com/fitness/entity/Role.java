@@ -1,11 +1,17 @@
 package com.fitness.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "role")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
 
     @Id
@@ -17,5 +23,4 @@ public class Role {
 
     @Column(nullable = false)
     private String displayName;
-    // Для ролей каскад не требуется, так как роли обычно общие и не удаляются при удалении пользователя
 }

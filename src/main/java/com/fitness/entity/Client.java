@@ -2,6 +2,8 @@ package com.fitness.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -11,13 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Нет cascade и OnDelete, только связь к User
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление клиента при удалении пользователя
+    private User user;
 
     private String firstName;
     private String lastName;
@@ -26,4 +30,7 @@ public class Client {
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> subscriptions;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Registration> registrations;
 }

@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -21,32 +20,26 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private Double price;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
-    @JsonIgnoreProperties({"user"})
-    @OnDelete(action = OnDeleteAction.CASCADE) // При удалении Client удаляются Subscriptions
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление клиента
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "fitness_class_id", nullable = false)
-    @JsonIgnoreProperties({"description", "capacity", "trainer", "schedules"})
-    @OnDelete(action = OnDeleteAction.CASCADE) // При удалении FitnessClass удаляются Subscriptions
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление фитнес-класса
     private FitnessClass fitnessClass;
 
     @OneToOne(mappedBy = "subscription", cascade = CascadeType.ALL)
     @JsonBackReference
-    // Здесь уже CascadeType.ALL для Payment
     private Payment payment;
-
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление расписания
     private Schedule schedule;
 }

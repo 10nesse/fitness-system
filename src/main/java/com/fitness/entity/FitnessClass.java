@@ -14,7 +14,10 @@ import java.util.List;
 @Entity
 @Table(name = "fitness_classes")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FitnessClass {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,9 +34,9 @@ public class FitnessClass {
 
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление тренера
     private Trainer trainer;
 
-    // FitnessClass имеет расписание и подписки
     @OneToMany(mappedBy = "fitnessClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules;
 
