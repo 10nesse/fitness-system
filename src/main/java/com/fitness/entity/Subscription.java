@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -20,7 +21,10 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private Double price;
 

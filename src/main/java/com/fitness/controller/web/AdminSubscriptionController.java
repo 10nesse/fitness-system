@@ -105,6 +105,7 @@ public class AdminSubscriptionController {
         return "admin/edit-subscription"; // Шаблон для редактирования
     }
 
+
     // Обработка обновления абонемента
     @PostMapping("/edit")
     public String updateSubscription(
