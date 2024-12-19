@@ -37,11 +37,13 @@ public class TrainerScheduleController {
         this.userService = userService;
     }
 
-    // Просмотр расписаний тренера
+    /**
+     * Просмотр расписаний тренера
+     */
     @GetMapping
     public String viewSchedules(Model model, Authentication authentication) {
         String username = authentication.getName();
-        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findByTrainerUserUsername(username);
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
 
         if (trainerFitnessClassOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
@@ -54,11 +56,13 @@ public class TrainerScheduleController {
         return "trainer/schedules";
     }
 
-    // Форма создания нового расписания
+    /**
+     * Форма создания нового расписания
+     */
     @GetMapping("/create")
     public String createScheduleForm(Model model, Authentication authentication) {
         String username = authentication.getName();
-        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findByTrainerUserUsername(username);
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
 
         if (trainerFitnessClassOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
@@ -71,14 +75,16 @@ public class TrainerScheduleController {
         return "trainer/create-schedule";
     }
 
-    // Обработка создания нового расписания
+    /**
+     * Обработка создания нового расписания
+     */
     @PostMapping("/create")
     public String createSchedule(@Valid @ModelAttribute("schedule") Schedule schedule,
                                  BindingResult bindingResult,
                                  Authentication authentication,
                                  Model model) {
         String username = authentication.getName();
-        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findByTrainerUserUsername(username);
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
 
         if (trainerFitnessClassOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
@@ -97,54 +103,64 @@ public class TrainerScheduleController {
         return "redirect:/web/trainer/schedules";
     }
 
-    // Форма редактирования расписания
+    /**
+     * Форма редактирования расписания
+     */
     @GetMapping("/edit/{id}")
     public String editScheduleForm(@PathVariable Long id,
                                    Model model,
                                    Authentication authentication) {
         String username = authentication.getName();
-        Optional<Schedule> scheduleOpt = scheduleService.findById(id);
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
+
+        if (trainerFitnessClassOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
+            return "trainer/schedules";
+        }
+
+        FitnessClass fitnessClass = trainerFitnessClassOpt.get();
+        Optional<Schedule> scheduleOpt = scheduleService.findByIdAndTrainer(id, fitnessClass.getTrainer());
 
         if (scheduleOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Расписание не найдено");
+            model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его редактирование");
             return "trainer/schedules";
         }
 
         Schedule schedule = scheduleOpt.get();
-
-        if (!schedule.getFitnessClass().getTrainer().getUser().getUsername().equals(username)) {
-            model.addAttribute("errorMessage", "У вас нет прав на редактирование этого расписания");
-            return "trainer/schedules";
-        }
-
         model.addAttribute("schedule", schedule);
-        model.addAttribute("fitnessClass", schedule.getFitnessClass());
+        model.addAttribute("fitnessClass", fitnessClass);
         return "trainer/edit-schedule";
     }
 
-    // Обработка редактирования расписания
-    @PostMapping("/edit")
-    public String editSchedule(@Valid @ModelAttribute("schedule") Schedule schedule,
+    /**
+     * Обработка редактирования расписания
+     */
+    @PostMapping("/edit/{id}")
+    public String editSchedule(@PathVariable Long id,
+                               @Valid @ModelAttribute("schedule") Schedule schedule,
                                BindingResult bindingResult,
                                Authentication authentication,
                                Model model) {
         String username = authentication.getName();
-        Optional<Schedule> existingScheduleOpt = scheduleService.findById(schedule.getId());
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
+
+        if (trainerFitnessClassOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
+            return "trainer/schedules";
+        }
+
+        FitnessClass fitnessClass = trainerFitnessClassOpt.get();
+        Optional<Schedule> existingScheduleOpt = scheduleService.findByIdAndTrainer(id, fitnessClass.getTrainer());
 
         if (existingScheduleOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Расписание не найдено");
+            model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его редактирование");
             return "trainer/schedules";
         }
 
         Schedule existingSchedule = existingScheduleOpt.get();
 
-        if (!existingSchedule.getFitnessClass().getTrainer().getUser().getUsername().equals(username)) {
-            model.addAttribute("errorMessage", "У вас нет прав на редактирование этого расписания");
-            return "trainer/schedules";
-        }
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("fitnessClass", existingSchedule.getFitnessClass());
+            model.addAttribute("fitnessClass", fitnessClass);
             return "trainer/edit-schedule";
         }
 
@@ -157,21 +173,25 @@ public class TrainerScheduleController {
         return "redirect:/web/trainer/schedules";
     }
 
-    // Обработка удаления расписания
+
+    /**
+     * Обработка удаления расписания
+     */
     @GetMapping("/delete/{id}")
     public String deleteSchedule(@PathVariable Long id, Authentication authentication, Model model) {
         String username = authentication.getName();
-        Optional<Schedule> scheduleOpt = scheduleService.findById(id);
+        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
 
-        if (scheduleOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Расписание не найдено");
+        if (trainerFitnessClassOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
             return "trainer/schedules";
         }
 
-        Schedule schedule = scheduleOpt.get();
+        FitnessClass fitnessClass = trainerFitnessClassOpt.get();
+        Optional<Schedule> scheduleOpt = scheduleService.findByIdAndTrainer(id, fitnessClass.getTrainer());
 
-        if (!schedule.getFitnessClass().getTrainer().getUser().getUsername().equals(username)) {
-            model.addAttribute("errorMessage", "У вас нет прав на удаление этого расписания");
+        if (scheduleOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его удаление");
             return "trainer/schedules";
         }
 

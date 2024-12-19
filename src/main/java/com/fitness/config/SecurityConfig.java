@@ -25,27 +25,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                // .csrf().disable() // Удалите или закомментируйте эту строку
                 .authorizeHttpRequests()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/web/auth/**").permitAll() // Доступ к страницам регистрации/логина
-
-                // Ограничение доступа к управлению пользователями только для ADMIN
+                .requestMatchers("/web/auth/**").permitAll()
                 .requestMatchers("/web/users/**").hasRole("ADMIN")
-
-                // Доступ к различным разделам в зависимости от ролей
                 .requestMatchers("/web/admin/**").hasRole("ADMIN")
                 .requestMatchers("/web/trainer/**").hasAnyRole("ADMIN", "TRAINER")
                 .requestMatchers("/web/client/**").hasAnyRole("ADMIN", "CLIENT")
-
-                // Общая главная страница доступна для всех аутентифицированных пользователей
                 .requestMatchers("/web/home").authenticated()
-
-                // Остальные веб-страницы требуют аутентификации
                 .requestMatchers("/web/**").authenticated()
-
-                // API-endpoints с разными ролями
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/clients/**").hasAnyRole("ADMIN", "CLIENT")
                 .requestMatchers("/api/trainers/**").hasAnyRole("ADMIN", "TRAINER")
@@ -54,7 +44,7 @@ public class SecurityConfig {
                 .and()
                 .formLogin()
                 .loginPage("/web/auth/login")
-                .successHandler(successHandler) // Используем кастомный successHandler
+                .successHandler(successHandler)
                 .failureUrl("/web/auth/login?error=true")
                 .permitAll()
                 .and()
@@ -65,6 +55,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

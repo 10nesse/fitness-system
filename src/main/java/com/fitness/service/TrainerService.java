@@ -21,9 +21,6 @@ public class TrainerService {
         this.userRepository = userRepository;
     }
 
-    public Optional<Client> findByUserUsername(String username) {
-        return trainerRepository.findByUser_Username(username);
-    }
 
     public List<Trainer> getAllTrainers() {
         return trainerRepository.findAll();
@@ -39,6 +36,17 @@ public class TrainerService {
 
     public void deleteById(Long id) {
         trainerRepository.deleteById(id);
+    }
+
+    /**
+     * Поиск тренера по имени пользователя
+     */
+    public Optional<Trainer> findByUserUsername(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        return trainerRepository.findByUserUsername(username);
     }
 
 

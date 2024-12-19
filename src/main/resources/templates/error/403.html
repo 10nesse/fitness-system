@@ -1,15 +1,15 @@
-<!-- src/main/resources/templates/error/404.html -->
+<!-- src/main/resources/templates/error/403.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-  <title th:fragment="title">Страница Не Найдена</title>
+  <title th:fragment="title">Доступ Запрещён</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content" th:fragment="~{layout :: content}">
-  <h1>404 - Страница Не Найдена</h1>
-  <p>Извините, страница, которую вы ищете, не существует.</p>
+  <h1>403 - Доступ Запрещён</h1>
+  <p>У вас нет прав для выполнения этого действия.</p>
   <a th:href="@{/web/trainer/classes}" class="btn btn-primary">Вернуться к Списку Классов</a>
 </div>
 </body>

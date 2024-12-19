@@ -12,4 +12,6 @@ public interface TrainerRepository extends JpaRepository<Trainer, Long> {
     boolean existsByEmail(String email);
     // Добавьте этот метод для поиска клиента по username
     Optional<Client> findByUser_Username(String username);
+    // Добавлен метод для поиска тренера по username пользователя
+    Optional<Trainer> findByUserUsername(String username);
 }

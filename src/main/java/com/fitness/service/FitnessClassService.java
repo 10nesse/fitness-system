@@ -17,6 +17,9 @@ public class FitnessClassService {
     @Autowired
     private FitnessClassRepository fitnessClassRepository;
 
+    /**
+     * Сохранение или обновление фитнес-класса
+     */
     public FitnessClass saveFitnessClass(FitnessClass fitnessClass) {
         return fitnessClassRepository.save(fitnessClass);
     }
@@ -26,23 +29,46 @@ public class FitnessClassService {
         return fitnessClassRepository.findByTrainer(trainer);
     }
 
-    public Optional<FitnessClass> findByTrainerUserUsername(String username) {
+
+    /**
+     * Получение всех фитнес-классов тренера по username
+     */
+    public List<FitnessClass> getAllFitnessClassesByTrainerUsername(String username) {
         return fitnessClassRepository.findByTrainerUserUsername(username);
     }
 
-    // Поиск фитнес-класса по ID и тренеру
+    /**
+     * Поиск первого фитнес-класса тренера по username
+     */
+    public Optional<FitnessClass> findFirstFitnessClassByTrainerUsername(String username) {
+        return fitnessClassRepository.findByTrainerUserUsername(username).stream().findFirst();
+    }
+
+
+    /**
+     * Поиск фитнес-класса по ID и тренеру
+     */
     public Optional<FitnessClass> findByIdAndTrainer(Long id, Trainer trainer) {
         return fitnessClassRepository.findByIdAndTrainer(id, trainer);
     }
 
+    /**
+     * Получение фитнес-класса по ID
+     */
     public Optional<FitnessClass> getFitnessClassById(Long id) {
         return fitnessClassRepository.findById(id);
     }
 
+    /**
+     * Получение всех фитнес-классов
+     */
     public List<FitnessClass> getAllFitnessClasses() {
         return fitnessClassRepository.findAll();
     }
 
+    /**
+     * Удаление фитнес-класса по ID
+     */
     public void deleteFitnessClass(Long id) {
         fitnessClassRepository.deleteById(id);
     }
