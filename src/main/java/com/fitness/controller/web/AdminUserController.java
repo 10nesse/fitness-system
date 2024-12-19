@@ -16,12 +16,12 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/web/admin/users")
-public class WebUserController {
+public class AdminUserController {
 
     private final UserService userService;
     private final RoleService roleService;
 
-    public WebUserController(UserService userService, RoleService roleService) {
+    public AdminUserController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }

@@ -15,12 +15,12 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/trainers")
-public class WebTrainerController {
+public class AdminTrainerController {
 
     private final TrainerService trainerService;
     private final UserService userService;
 
-    public WebTrainerController(TrainerService trainerService, UserService userService) {
+    public AdminTrainerController(TrainerService trainerService, UserService userService) {
         this.trainerService = trainerService;
         this.userService = userService;
     }

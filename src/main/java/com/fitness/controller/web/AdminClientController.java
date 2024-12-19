@@ -14,12 +14,12 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/clients")
-public class WebClientController {
+public class AdminClientController {
 
     private final ClientService clientService;
     private final UserService userService;
 
-    public WebClientController(ClientService clientService, UserService userService) {
+    public AdminClientController(ClientService clientService, UserService userService) {
         this.clientService = clientService;
         this.userService = userService;
     }

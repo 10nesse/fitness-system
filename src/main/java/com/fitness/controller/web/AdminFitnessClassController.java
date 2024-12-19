@@ -17,13 +17,13 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/fitness-classes")
-public class WebFitnessClassController {
+public class AdminFitnessClassController {
 
     private final FitnessClassService fitnessClassService;
     private final TrainerService trainerService;
 
     @Autowired
-    public WebFitnessClassController(FitnessClassService fitnessClassService, TrainerService trainerService) {
+    public AdminFitnessClassController(FitnessClassService fitnessClassService, TrainerService trainerService) {
         this.fitnessClassService = fitnessClassService;
         this.trainerService = trainerService;
     }

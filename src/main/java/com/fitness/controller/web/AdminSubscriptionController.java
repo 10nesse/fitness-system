@@ -19,14 +19,14 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/subscriptions")
-public class WebSubscriptionController {
+public class AdminSubscriptionController {
 
     private final SubscriptionService subscriptionService;
     private final ClientService clientService;
     private final FitnessClassService fitnessClassService;
 
     @Autowired
-    public WebSubscriptionController(SubscriptionService subscriptionService,
+    public AdminSubscriptionController(SubscriptionService subscriptionService,
                                      ClientService clientService,
                                      FitnessClassService fitnessClassService) {
         this.subscriptionService = subscriptionService;

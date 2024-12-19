@@ -18,13 +18,13 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/payments")
-public class WebPaymentController {
+public class AdminPaymentController {
 
     private final PaymentService paymentService;
     private final SubscriptionService subscriptionService;
 
     @Autowired
-    public WebPaymentController(PaymentService paymentService, SubscriptionService subscriptionService) {
+    public AdminPaymentController(PaymentService paymentService, SubscriptionService subscriptionService) {
         this.paymentService = paymentService;
         this.subscriptionService = subscriptionService;
     }

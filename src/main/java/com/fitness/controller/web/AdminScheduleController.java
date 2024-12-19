@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/web/admin/schedules")
-public class WebScheduleController {
+public class AdminScheduleController {
 
     private final ScheduleService scheduleService;
     private final FitnessClassService fitnessClassService;
 
-    public WebScheduleController(ScheduleService scheduleService, FitnessClassService fitnessClassService) {
+    public AdminScheduleController(ScheduleService scheduleService, FitnessClassService fitnessClassService) {
         this.scheduleService = scheduleService;
         this.fitnessClassService = fitnessClassService;
     }
