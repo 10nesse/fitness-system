@@ -157,6 +157,11 @@ public class ScheduleService {
                 .collect(Collectors.toList());
     }
 
+    public List<Schedule> findSchedulesByFitnessClassesAndPeriod(List<FitnessClass> fitnessClasses, LocalDateTime start, LocalDateTime end) {
+        return scheduleRepository.findByFitnessClassInAndStartTimeBetween(fitnessClasses, start, end);
+    }
+
+
 
 
 

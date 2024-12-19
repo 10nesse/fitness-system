@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +55,20 @@ public class ClientScheduleController {
      * Расписания по абонементам - доступные занятия для клиента
      */
     @GetMapping("/subscription-schedules")
-    public String viewSubscriptionSchedules(Model model, Authentication authentication) {
+    public String viewSubscriptionSchedules(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            Model model,
+            Authentication authentication) {
+
+        // Установить даты по умолчанию
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        }
+        if (endDate == null) {
+            endDate = LocalDate.now().plusMonths(1);
+        }
+
         String username = authentication.getName();
         Client client = clientService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Клиент не найден"));
@@ -68,10 +79,18 @@ public class ClientScheduleController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<Schedule> schedules = scheduleService.findByFitnessClasses(fitnessClasses);
+        List<Schedule> schedules = scheduleService.findSchedulesByFitnessClassesAndPeriod(
+                fitnessClasses,
+                startDate.atStartOfDay(),
+                endDate.atTime(23, 59, 59)
+        );
+
         List<ScheduleWithCapacityDTO> schedulesWithCapacity = scheduleService.getSchedulesWithCapacity(schedules);
 
         model.addAttribute("schedules", schedulesWithCapacity);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
         return "client/subscription-schedules";
     }
 
@@ -94,6 +113,7 @@ public class ClientScheduleController {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        return viewSubscriptionSchedules(model, authentication);
+        // Возврат к расписанию с сохранением фильтрации
+        return viewSubscriptionSchedules(null, null, model, authentication);
     }
 }

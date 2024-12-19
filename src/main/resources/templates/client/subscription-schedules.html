@@ -20,15 +20,22 @@
     </a>
   </p>
 
-  <!-- Сообщение об ошибке -->
-  <div th:if="${errorMessage != null}">
-    <div class="alert alert-danger" th:text="${errorMessage}"></div>
-  </div>
-
-  <!-- Сообщение об успехе -->
-  <div th:if="${successMessage != null}">
-    <div class="alert alert-success" th:text="${successMessage}"></div>
-  </div>
+  <!-- Форма фильтрации -->
+  <form th:action="@{/web/client/subscription-schedules}" method="get" class="mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <label for="startDate" class="form-label">Дата начала:</label>
+        <input type="date" id="startDate" name="startDate" class="form-control" th:value="${startDate}"/>
+      </div>
+      <div class="col-md-4">
+        <label for="endDate" class="form-label">Дата окончания:</label>
+        <input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}"/>
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Применить</button>
+      </div>
+    </div>
+  </form>
 
   <!-- Таблица расписаний -->
   <div th:if="${schedules != null and !schedules.isEmpty()}">
