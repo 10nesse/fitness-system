@@ -83,15 +83,16 @@ public class AdminSubscriptionController {
             return "admin/create-subscription";
         }
 
-        // Устанавливаем клиента и фитнес-класс
+        // Устанавливаем клиента и фитнес-класс для абонемента
         subscription.setClient(clientOpt.get());
         subscription.setFitnessClass(fitnessClassOpt.get());
 
-        // Сохраняем абонемент
+        // Поле schedule оставляем null
         subscriptionService.saveSubscription(subscription);
 
         return "redirect:/web/admin/subscriptions";
     }
+
 
     // Форма редактирования абонемента
     @GetMapping("/edit/{id}")
