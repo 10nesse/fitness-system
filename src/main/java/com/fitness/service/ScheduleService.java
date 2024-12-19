@@ -72,20 +72,22 @@ public class ScheduleService {
      * Получение расписаний с клиентами для тренера
      */
     public List<ScheduleWithClientsDTO> getAllSchedulesWithClients(Trainer trainer) {
-        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer);
-        List<Schedule> schedules = scheduleRepository.findByFitnessClassIn(fitnessClasses);
+        List<Schedule> schedules = scheduleRepository.findByFitnessClass_Trainer(trainer);
 
-        return schedules.stream()
-                .map(schedule -> {
-                    List<Client> clients = schedule.getSubscriptions().stream()
-                            .map(Subscription::getClient)
-                            .collect(Collectors.toList());
-                    int registered = clients.size();
-                    int capacity = schedule.getFitnessClass().getCapacity();
-                    return new ScheduleWithClientsDTO(schedule, clients, registered, capacity);
-                })
-                .collect(Collectors.toList());
+        return schedules.stream().map(schedule -> {
+            List<Registration> registrations = registrationRepository.findBySchedule(schedule); // Извлекаем регистрации
+            List<Client> clients = registrations.stream()
+                    .map(Registration::getClient) // Получаем клиентов из регистраций
+                    .toList();
+            int registered = clients.size();
+            int capacity = schedule.getFitnessClass().getCapacity();
+
+            return new ScheduleWithClientsDTO(schedule, clients, registered, capacity);
+        }).toList();
     }
+
+
+
 
 
 
@@ -186,6 +188,8 @@ public class ScheduleService {
         registrationRepository.save(registration);
         return true;
     }
+
+
 
 
 

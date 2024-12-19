@@ -14,4 +14,8 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     List<Registration> findByClient(Client client);
 
+    // Поиск всех регистраций для заданного занятия
+    List<Registration> findBySchedule(Schedule schedule);
+
+
 }

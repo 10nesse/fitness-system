@@ -61,9 +61,14 @@ public class TrainerScheduleController {
 
         List<ScheduleWithClientsDTO> scheduleWithClients = scheduleService.getAllSchedulesWithClients(trainer);
 
+        // Логирование для проверки данных
+        scheduleWithClients.forEach(dto -> System.out.println("Schedule ID: " + dto.getSchedule().getId() +
+                ", Registered: " + dto.getRegistered() + ", Capacity: " + dto.getCapacity()));
+
         model.addAttribute("schedules", scheduleWithClients);
         return "trainer/schedules";
     }
+
 
 
     /**
