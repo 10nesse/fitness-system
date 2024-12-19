@@ -94,11 +94,18 @@ public class ClientScheduleController {
         return "client/subscription-schedules";
     }
 
+
     /**
      * Регистрация на занятие
      */
     @PostMapping("/subscription-schedules/register/{scheduleId}")
-    public String registerToSubscriptionSchedule(@PathVariable Long scheduleId, Authentication authentication, Model model) {
+    public String registerToSubscriptionSchedule(
+            @PathVariable Long scheduleId,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            Authentication authentication,
+            Model model) {
+
         String username = authentication.getName();
         Client client = clientService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Клиент не найден"));
@@ -113,7 +120,8 @@ public class ClientScheduleController {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        // Возврат к расписанию с сохранением фильтрации
-        return viewSubscriptionSchedules(null, null, model, authentication);
+        // Возврат к расписанию с сохранением фильтров
+        return viewSubscriptionSchedules(startDate, endDate, model, authentication);
     }
+
 }

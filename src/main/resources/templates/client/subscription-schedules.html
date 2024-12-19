@@ -12,6 +12,16 @@
 <body layout:decorate="~{layout}">
 <div layout:fragment="content" class="container mt-5">
   <h1>Расписание Абонементов</h1>
+  <!-- Сообщение об ошибке -->
+  <div th:if="${errorMessage != null}">
+    <div class="alert alert-danger" th:text="${errorMessage}"></div>
+  </div>
+
+  <!-- Сообщение об успехе -->
+  <div th:if="${successMessage != null}">
+    <div class="alert alert-success" th:text="${successMessage}"></div>
+  </div>
+
 
   <!-- Кнопки навигации -->
   <p>
