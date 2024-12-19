@@ -40,4 +40,9 @@ public class Subscription {
     @JsonBackReference
     // Здесь уже CascadeType.ALL для Payment
     private Payment payment;
+
+
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 }

@@ -1,14 +1,17 @@
+<!-- src/main/resources/templates/trainer/schedules.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title layout:fragment="title">Расписание</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
-    <!-- Подключение Font Awesome для иконок (опционально) -->
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Подключение Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body layout:decorate="~{layout}">
-<div layout:fragment="content">
+<div layout:fragment="content" class="container mt-5">
     <h1>Расписание</h1>
 
     <!-- Кнопки навигации -->
@@ -23,30 +26,90 @@
 
     <!-- Сообщение об ошибке -->
     <div th:if="${errorMessage != null}">
-        <p style="color:red" th:text="${errorMessage}"></p>
+        <div class="alert alert-danger" th:text="${errorMessage}"></div>
     </div>
 
     <!-- Таблица расписаний -->
     <div th:if="${schedules != null and !schedules.isEmpty()}">
-        <table>
-            <thead>
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
             <tr>
                 <th>Фитнес-Класс</th>
                 <th>Дата и Время Начала</th>
                 <th>Дата и Время Окончания</th>
+                <th>Записано</th>
+                <th>Клиенты</th>
                 <th>Действия</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="schedule : ${schedules}">
-                <td th:text="${schedule.fitnessClass.name}">Фитнес-Класс</td>
-                <td th:text="${#temporals.format(schedule.startTime, 'yyyy-MM-dd HH:mm')}">Начало</td>
-                <td th:text="${#temporals.format(schedule.endTime, 'yyyy-MM-dd HH:mm')}">Окончание</td>
+            <tr th:each="scheduleDTO : ${schedules}">
+                <td th:text="${scheduleDTO.schedule.fitnessClass.name}">Фитнес-Класс</td>
+                <td th:text="${#temporals.format(scheduleDTO.schedule.startTime, 'yyyy-MM-dd HH:mm')}">Начало</td>
+                <td th:text="${#temporals.format(scheduleDTO.schedule.endTime, 'yyyy-MM-dd HH:mm')}">Окончание</td>
+                <td th:text="${scheduleDTO.registered + '/' + scheduleDTO.capacity}">Записано</td>
                 <td>
-                    <a th:href="@{'/web/trainer/schedules/edit/' + ${schedule.id}}" class="btn btn-warning">
+                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            th:attr="data-bs-target='#clientsModal-${scheduleDTO.schedule.id}'">
+                        <i class="fas fa-users"></i> Посмотреть
+                    </button>
+
+                    <!-- Modal для списка клиентов -->
+                    <div th:if="${scheduleDTO.clients != null and !scheduleDTO.clients.isEmpty()}"
+                         th:id="'clientsModal-' + ${scheduleDTO.schedule.id}"
+                         class="modal fade" tabindex="-1" aria-labelledby="clientsModalLabel-${scheduleDTO.schedule.id}"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" th:id="'clientsModalLabel-' + ${scheduleDTO.schedule.id}">Клиенты на занятие:
+                                        <span th:text="${scheduleDTO.schedule.fitnessClass.name}">Фитнес-Класс</span>
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item" th:each="client : ${scheduleDTO.clients}">
+                                            <span th:text="${client.firstName} + ' ' + ${client.lastName} + ' (' + ${client.email} + ')"}></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal, если нет клиентов -->
+                    <div th:if="${scheduleDTO.clients == null or scheduleDTO.clients.isEmpty()}"
+                         th:id="'clientsModal-' + ${scheduleDTO.schedule.id}"
+                         class="modal fade" tabindex="-1" aria-labelledby="clientsModalLabel-${scheduleDTO.schedule.id}"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" th:id="'clientsModalLabel-' + ${scheduleDTO.schedule.id}">Клиенты на занятие:
+                                        <span th:text="${scheduleDTO.schedule.fitnessClass.name}">Фитнес-Класс</span>
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>На это занятие никто не записан.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+                <td>
+                    <a th:href="@{'/web/trainer/schedules/edit/' + ${scheduleDTO.schedule.id}}" class="btn btn-warning btn-sm">
                         <i class="fas fa-edit"></i> Редактировать
                     </a>
-                    <a th:href="@{'/web/trainer/schedules/delete/' + ${schedule.id}}" class="btn btn-danger"
+                    <a th:href="@{'/web/trainer/schedules/delete/' + ${scheduleDTO.schedule.id}}" class="btn btn-danger btn-sm"
                        onclick="return confirm('Вы уверены, что хотите удалить это расписание?')">
                         <i class="fas fa-trash-alt"></i> Удалить
                     </a>
@@ -56,8 +119,16 @@
         </table>
     </div>
     <div th:if="${schedules == null or schedules.isEmpty()}">
-        <p>Нет доступных расписаний.</p>
+        <div class="alert alert-info">Нет доступных расписаний.</div>
     </div>
 </div>
+
+<!-- Подключение Bootstrap JS и его зависимостей -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+        integrity="sha384-7+PpJdMWu/qh6TBC4sBlFIsJgx7RDRPgzF0ts4pu4eMDqsRxDD4K3PQHo4UvGYcE"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-Q3pWdFFzN3s44oAx5iF9ryS6kD2oO0wFblLkZd6zG/zmeQiFvZvy7ewFvz4J1PzF"
+        crossorigin="anonymous"></script>
 </body>
 </html>

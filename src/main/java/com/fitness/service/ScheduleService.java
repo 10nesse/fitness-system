@@ -1,9 +1,7 @@
 package com.fitness.service;
 
-import com.fitness.entity.FitnessClass;
-import com.fitness.entity.Schedule;
-import com.fitness.entity.Subscription;
-import com.fitness.entity.Trainer;
+import com.fitness.dto.ScheduleWithClientsDTO;
+import com.fitness.entity.*;
 import com.fitness.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,18 +16,33 @@ public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Autowired
+    private FitnessClassService fitnessClassService;
+
+    /**
+     * Сохранение или обновление расписания
+     */
     public Schedule saveSchedule(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
 
+    /**
+     * Получение расписания по ID
+     */
     public Optional<Schedule> getScheduleById(Long id) {
         return scheduleRepository.findById(id);
     }
 
+    /**
+     * Получение всех расписаний
+     */
     public List<Schedule> getAllSchedules() {
         return scheduleRepository.findAll();
     }
 
+    /**
+     * Удаление расписания по ID
+     */
     public void deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
     }
@@ -39,8 +52,29 @@ public class ScheduleService {
 
     }
 
+
+
     public List<Schedule> findByFitnessClass(FitnessClass fitnessClass) {
         return scheduleRepository.findByFitnessClass(fitnessClass);
+    }
+
+    /**
+     * Получение расписаний с клиентами для тренера
+     */
+    public List<ScheduleWithClientsDTO> getAllSchedulesWithClients(Trainer trainer) {
+        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer);
+        List<Schedule> schedules = scheduleRepository.findByFitnessClassIn(fitnessClasses);
+
+        return schedules.stream()
+                .map(schedule -> {
+                    List<Client> clients = schedule.getSubscriptions().stream()
+                            .map(Subscription::getClient)
+                            .collect(Collectors.toList());
+                    int registered = clients.size();
+                    int capacity = schedule.getFitnessClass().getCapacity();
+                    return new ScheduleWithClientsDTO(schedule, clients, registered, capacity);
+                })
+                .collect(Collectors.toList());
     }
 
 
@@ -49,6 +83,9 @@ public class ScheduleService {
         return scheduleRepository.findByFitnessClassIn(fitnessClasses);
     }
 
+    /**
+     * Получение расписаний для списка фитнес-классов
+     */
     public List<Schedule> findByFitnessClasses(List<FitnessClass> fitnessClasses) {
         return scheduleRepository.findByFitnessClassIn(fitnessClasses);
     }

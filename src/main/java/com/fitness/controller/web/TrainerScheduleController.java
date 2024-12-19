@@ -1,5 +1,6 @@
 package com.fitness.controller.web;
 
+import com.fitness.dto.ScheduleWithClientsDTO;
 import com.fitness.entity.Schedule;
 import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Trainer;
@@ -38,6 +39,9 @@ public class TrainerScheduleController {
         this.trainerService = trainerService;
     }
 
+    /**
+     * Вспомогательный метод для получения Trainer по username
+     */
     private Trainer getTrainerByUsername(String username) {
         return trainerService.findByUserUsername(username)
                 .orElseThrow(() -> new RuntimeException("Тренер не найден с именем пользователя: " + username));
@@ -47,20 +51,17 @@ public class TrainerScheduleController {
     /**
      * Просмотр расписаний тренера
      */
+    /**
+     * Просмотр расписаний тренера с клиентами
+     */
     @GetMapping
     public String viewSchedules(Model model, Authentication authentication) {
         String username = authentication.getName();
         Trainer trainer = getTrainerByUsername(username); // Получение Trainer
 
-        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer); // Получение всех фитнес-классов тренера
+        List<ScheduleWithClientsDTO> scheduleWithClients = scheduleService.getAllSchedulesWithClients(trainer);
 
-        if (fitnessClasses.isEmpty()) {
-            model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
-            return "trainer/schedules";
-        }
-
-        List<Schedule> schedules = scheduleService.findByFitnessClasses(fitnessClasses);
-        model.addAttribute("schedules", schedules);
+        model.addAttribute("schedules", scheduleWithClients);
         return "trainer/schedules";
     }
 
@@ -115,9 +116,14 @@ public class TrainerScheduleController {
         }
 
         // Получение выбранного фитнес-класса из формы
-        FitnessClass selectedFitnessClass = fitnessClassService.getFitnessClassById(schedule.getFitnessClass().getId())
-                .orElseThrow(() -> new RuntimeException("Фитнес-класс не найден"));
+        Optional<FitnessClass> selectedFitnessClassOpt = fitnessClassService.getFitnessClassById(schedule.getFitnessClass().getId());
+        if (selectedFitnessClassOpt.isEmpty()) {
+            bindingResult.rejectValue("fitnessClass", "error.schedule", "Выбранный фитнес-класс не найден.");
+            model.addAttribute("fitnessClasses", fitnessClasses);
+            return "trainer/create-schedule";
+        }
 
+        FitnessClass selectedFitnessClass = selectedFitnessClassOpt.get();
         schedule.setFitnessClass(selectedFitnessClass);
         scheduleService.saveSchedule(schedule);
         return "redirect:/web/trainer/schedules";
@@ -142,15 +148,17 @@ public class TrainerScheduleController {
             return "trainer/schedules";
         }
 
-        Optional<Schedule> scheduleOpt = scheduleService.findByIdAndTrainer(id, trainer); // Использование Trainer
+        Optional<ScheduleWithClientsDTO> scheduleWithClientsOpt = scheduleService.getAllSchedulesWithClients(trainer).stream()
+                .filter(dto -> dto.getSchedule().getId().equals(id))
+                .findFirst();
 
-        if (scheduleOpt.isEmpty()) {
+        if (scheduleWithClientsOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его редактирование");
             return "trainer/schedules";
         }
 
-        Schedule schedule = scheduleOpt.get();
-        model.addAttribute("schedule", schedule);
+        ScheduleWithClientsDTO scheduleWithClients = scheduleWithClientsOpt.get();
+        model.addAttribute("schedule", scheduleWithClients.getSchedule());
         model.addAttribute("fitnessClasses", fitnessClasses); // Передача списка фитнес-классов
         return "trainer/edit-schedule";
     }
@@ -177,14 +185,16 @@ public class TrainerScheduleController {
             return "trainer/schedules";
         }
 
-        Optional<Schedule> existingScheduleOpt = scheduleService.findByIdAndTrainer(id, trainer); // Использование Trainer
+        Optional<ScheduleWithClientsDTO> existingScheduleOpt = scheduleService.getAllSchedulesWithClients(trainer).stream()
+                .filter(dto -> dto.getSchedule().getId().equals(id))
+                .findFirst();
 
         if (existingScheduleOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его редактирование");
             return "trainer/schedules";
         }
 
-        Schedule existingSchedule = existingScheduleOpt.get();
+        ScheduleWithClientsDTO existingScheduleDTO = existingScheduleOpt.get();
 
         // Валидация: Проверка, что время окончания не раньше начала
         if (schedule.getEndTime().isBefore(schedule.getStartTime())) {
@@ -196,16 +206,23 @@ public class TrainerScheduleController {
             return "trainer/edit-schedule";
         }
 
-        // Обновление полей расписания, включая выбор фитнес-класса
-        FitnessClass selectedFitnessClass = fitnessClassService.getFitnessClassById(schedule.getFitnessClass().getId())
-                .orElseThrow(() -> new RuntimeException("Фитнес-класс не найден"));
+        // Получение выбранного фитнес-класса из формы
+        Optional<FitnessClass> selectedFitnessClassOpt = fitnessClassService.getFitnessClassById(schedule.getFitnessClass().getId());
+        if (selectedFitnessClassOpt.isEmpty()) {
+            bindingResult.rejectValue("fitnessClass", "error.schedule", "Выбранный фитнес-класс не найден.");
+            model.addAttribute("fitnessClasses", fitnessClasses);
+            return "trainer/edit-schedule";
+        }
 
-        existingSchedule.setFitnessClass(selectedFitnessClass);
-        existingSchedule.setStartTime(schedule.getStartTime());
-        existingSchedule.setEndTime(schedule.getEndTime());
+        FitnessClass selectedFitnessClass = selectedFitnessClassOpt.get();
+
+        // Обновление полей расписания
+        existingScheduleDTO.getSchedule().setFitnessClass(selectedFitnessClass);
+        existingScheduleDTO.getSchedule().setStartTime(schedule.getStartTime());
+        existingScheduleDTO.getSchedule().setEndTime(schedule.getEndTime());
         // Обновление других полей по необходимости
 
-        scheduleService.saveSchedule(existingSchedule);
+        scheduleService.saveSchedule(existingScheduleDTO.getSchedule());
         return "redirect:/web/trainer/schedules";
     }
 
@@ -218,15 +235,16 @@ public class TrainerScheduleController {
     @GetMapping("/delete/{id}")
     public String deleteSchedule(@PathVariable Long id, Authentication authentication, Model model) {
         String username = authentication.getName();
-        Optional<FitnessClass> trainerFitnessClassOpt = fitnessClassService.findFirstFitnessClassByTrainerUsername(username);
+        Trainer trainer = getTrainerByUsername(username); // Получение Trainer
 
-        if (trainerFitnessClassOpt.isEmpty()) {
+        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer); // Получение всех фитнес-классов тренера
+
+        if (fitnessClasses.isEmpty()) {
             model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
             return "trainer/schedules";
         }
 
-        FitnessClass fitnessClass = trainerFitnessClassOpt.get();
-        Optional<Schedule> scheduleOpt = scheduleService.findByIdAndTrainer(id, fitnessClass.getTrainer());
+        Optional<Schedule> scheduleOpt = scheduleService.findByIdAndTrainer(id, trainer);
 
         if (scheduleOpt.isEmpty()) {
             model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его удаление");

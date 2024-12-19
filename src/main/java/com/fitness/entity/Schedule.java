@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "schedule")
@@ -30,4 +31,7 @@ public class Schedule {
     @JsonIgnoreProperties({"description", "capacity", "trainer", "schedules"})
     @OnDelete(action = OnDeleteAction.CASCADE) // При удалении FitnessClass удаляются Schedules
     private FitnessClass fitnessClass;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Subscription> subscriptions;
 }
