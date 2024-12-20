@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -144,27 +146,29 @@ public class TrainerScheduleController {
                                    Model model,
                                    Authentication authentication) {
         String username = authentication.getName();
-        Trainer trainer = getTrainerByUsername(username); // Получение Trainer
+        Trainer trainer = getTrainerByUsername(username);
 
-        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer); // Получение всех фитнес-классов тренера
+        List<FitnessClass> fitnessClasses = fitnessClassService.findByTrainer(trainer);
 
         if (fitnessClasses.isEmpty()) {
             model.addAttribute("errorMessage", "Фитнес-классы тренера не найдены");
             return "trainer/schedules";
         }
 
-        Optional<ScheduleWithClientsDTO> scheduleWithClientsOpt = scheduleService.getAllSchedulesWithClients(trainer).stream()
-                .filter(dto -> dto.getSchedule().getId().equals(id))
-                .findFirst();
+        Schedule existingSchedule = scheduleService.findByIdAndTrainer(id, trainer)
+                .orElseThrow(() -> new RuntimeException("Расписание не найдено или у вас нет прав на его редактирование"));
 
-        if (scheduleWithClientsOpt.isEmpty()) {
-            model.addAttribute("errorMessage", "Расписание не найдено или у вас нет прав на его редактирование");
-            return "trainer/schedules";
-        }
+        String formattedStartTime = existingSchedule.getStartTime() != null
+                ? existingSchedule.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+                : null;
+        String formattedEndTime = existingSchedule.getEndTime() != null
+                ? existingSchedule.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+                : null;
 
-        ScheduleWithClientsDTO scheduleWithClients = scheduleWithClientsOpt.get();
-        model.addAttribute("schedule", scheduleWithClients.getSchedule());
-        model.addAttribute("fitnessClasses", fitnessClasses); // Передача списка фитнес-классов
+        model.addAttribute("schedule", existingSchedule);
+        model.addAttribute("formattedStartTime", formattedStartTime);
+        model.addAttribute("formattedEndTime", formattedEndTime);
+        model.addAttribute("fitnessClasses", fitnessClasses);
         return "trainer/edit-schedule";
     }
 
