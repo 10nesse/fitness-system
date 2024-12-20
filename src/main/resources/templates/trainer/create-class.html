@@ -12,7 +12,7 @@
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content" class="container mt-5">
-  <h1>Создать Новый Фитнес-Класс</h1>
+  <h1>Создать новое занятие</h1>
 
   <form th:action="@{/web/trainer/classes/create}" th:object="${fitnessClass}" method="post">
     <!-- Отображение общих ошибок формы внутри формы -->
@@ -25,8 +25,8 @@
 
     <!-- Поля формы -->
     <div class="mb-3">
-      <label for="name" class="form-label">Название Класса</label>
-      <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Введите название класса" required/>
+      <label for="name" class="form-label">Название занятия</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Введите название занятия" required/>
       <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}">Ошибка</div>
     </div>
 

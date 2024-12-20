@@ -110,32 +110,30 @@ public class AdminUserController {
             return "admin/edit-user";
         }
 
-        // Проверка и обновление пользователя
-        userService.updateUser(user, roleNames);
+        // Получение существующего пользователя
+        User existingUser = userService.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Логика для добавления записей в таблицы `Client` и `Trainer`, если роли добавлены
-        if (roleNames.contains("ROLE_CLIENT") && clientService.findByUserId(user.getId()).isEmpty()) {
-            Client client = new Client();
-            client.setUser(user);
-            client.setFirstName(user.getFirstName());
-            client.setLastName(user.getLastName());
-            client.setEmail(user.getEmail());
-            client.setPhoneNumber(user.getPhoneNumber());
-            clientService.createClient(client);
+        // Если пароль заполнен, обновляем его
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            existingUser.setPassword(userService.encodePassword(user.getPassword()));
         }
 
-        if (roleNames.contains("ROLE_TRAINER") && trainerService.findByUserId(user.getId()).isEmpty()) {
-            Trainer trainer = new Trainer();
-            trainer.setUser(user);
-            trainer.setFirstName(user.getFirstName());
-            trainer.setLastName(user.getLastName());
-            trainer.setEmail(user.getEmail());
-            trainer.setPhoneNumber(user.getPhoneNumber());
-            trainerService.createTrainer(trainer);
-        }
+        // Обновление остальных данных
+        existingUser.setUsername(user.getUsername());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPhoneNumber(user.getPhoneNumber());
+        existingUser.setRoles(roleService.findRolesByNames(roleNames)); // Применение нового метода
+
+        userService.saveUser(existingUser); // Сохранение обновленного пользователя
 
         return "redirect:/web/admin/users";
     }
+
+
+
 
 
 

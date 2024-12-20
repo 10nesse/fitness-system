@@ -42,6 +42,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllByRoles_Name(roleName);
     }
 
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword); // passwordEncoder настроен в SecurityConfig
+    }
+
 
 
 

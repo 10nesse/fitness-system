@@ -21,7 +21,7 @@
     <div class="mb-3">
       <label for="fitnessClass" class="form-label">Фитнес-Класс:</label>
       <select id="fitnessClass" th:field="*{fitnessClass.id}" class="form-select" required>
-        <option value="" disabled>Выберите фитнес-класс</option>
+        <option value="" disabled>Выберите занятие</option>
         <option th:each="fc : ${fitnessClasses}" th:value="${fc.id}" th:text="${fc.name}"
                 th:selected="${fc.id} == ${schedule.fitnessClass.id}"></option>
       </select>

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -17,6 +19,14 @@ public class RoleService {
 
     public Optional<Role> findByName(String roleName) {
         return roleRepository.findByName(roleName);
+    }
+
+    public Set<Role> findRolesByNames(Set<String> roleNames) {
+        return roleNames.stream()
+                .map(roleRepository::findByName)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
     }
 
     public Role save(Role role) {

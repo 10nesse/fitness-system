@@ -12,7 +12,7 @@
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content" class="container mt-5">
-    <h1>Редактировать Фитнес-Класс</h1>
+    <h1>Редактировать занятие</h1>
 
     <form th:action="@{/web/trainer/classes/edit/{id}(id=${fitnessClass.id})}" th:object="${fitnessClass}" method="post">
         <!-- Отображение общих ошибок формы внутри формы -->
@@ -25,14 +25,14 @@
 
         <!-- Поля формы -->
         <div class="mb-3">
-            <label for="name" class="form-label">Название Класса</label>
-            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Введите название класса" required/>
+            <label for="name" class="form-label">Название занятия</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Введите название занятия" required/>
             <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}">Ошибка</div>
         </div>
 
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
-            <textarea class="form-control" id="description" th:field="*{description}" rows="3" placeholder="Введите описание класса" required></textarea>
+            <textarea class="form-control" id="description" th:field="*{description}" rows="3" placeholder="Введите описание занятия" required></textarea>
             <div th:if="${#fields.hasErrors('description')}" class="text-danger" th:errors="*{description}">Ошибка</div>
         </div>
 

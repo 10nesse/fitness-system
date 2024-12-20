@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-  <title layout:fragment="title">Мои Фитнес-Классы</title>
+  <title layout:fragment="title">Мои Занятия</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 </head>
 <body layout:decorate="~{layout}">
 <div layout:fragment="content" class="container mt-5">
-  <h1>Мои Фитнес-Классы</h1>
+  <h1>Мои Занятия</h1>
 
   <!-- Сообщение об успехе или ошибке -->
   <div th:if="${successMessage}" class="alert alert-success">
@@ -33,7 +33,7 @@
 
   <!-- Кнопка для создания нового фитнес-класса -->
   <a th:href="@{/web/trainer/classes/create}" class="btn btn-success mb-3">
-    <i class="fas fa-plus"></i> Создать Новый Класс
+    <i class="fas fa-plus"></i> Создать Новое Занятие
   </a>
 
   <!-- Таблица с фитнес-классами -->
