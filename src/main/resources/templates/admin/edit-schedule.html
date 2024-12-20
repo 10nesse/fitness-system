@@ -27,13 +27,17 @@
 
     <div class="mb-3">
       <label for="startTime" class="form-label">Время начала:</label>
-      <input type="datetime-local" id="startTime" th:field="*{startTime}" class="form-control" required/>
+      <input type="datetime-local" id="startTime" name="startTime" class="form-control"
+             th:value="${formattedStartTime}" required/>
     </div>
 
     <div class="mb-3">
       <label for="endTime" class="form-label">Время окончания:</label>
-      <input type="datetime-local" id="endTime" th:field="*{endTime}" class="form-control" required/>
+      <input type="datetime-local" id="endTime" name="endTime" class="form-control"
+             th:value="${formattedEndTime}" required/>
     </div>
+
+
 
     <button type="submit" class="btn btn-primary">Сохранить</button>
     <a th:href="@{/web/admin/schedules}" class="btn btn-secondary">Назад к Расписаниям</a>

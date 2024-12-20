@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,16 +72,30 @@ public class AdminScheduleController {
     public String editScheduleForm(@PathVariable Long id, Model model) {
         Schedule existingSchedule = scheduleService.getScheduleById(id)
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
+
+        // Преобразование LocalDateTime в строку формата для datetime-local
+        String formattedStartTime = existingSchedule.getStartTime() != null
+                ? existingSchedule.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+                : null;
+        String formattedEndTime = existingSchedule.getEndTime() != null
+                ? existingSchedule.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))
+                : null;
+
         model.addAttribute("schedule", existingSchedule);
+        model.addAttribute("formattedStartTime", formattedStartTime);
+        model.addAttribute("formattedEndTime", formattedEndTime);
         model.addAttribute("fitnessClasses", fitnessClassService.getAllFitnessClasses());
         return "admin/edit-schedule";
     }
+
 
     // Обработка обновления расписания
     @PostMapping("/edit")
     public String updateSchedule(@Valid @ModelAttribute("schedule") Schedule schedule,
                                  BindingResult bindingResult,
                                  @RequestParam("fitnessClassId") Long fitnessClassId,
+                                 @RequestParam("startTime") String startTime,
+                                 @RequestParam("endTime") String endTime,
                                  Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("fitnessClasses", fitnessClassService.getAllFitnessClasses());
@@ -94,18 +109,22 @@ public class AdminScheduleController {
             return "admin/edit-schedule";
         }
 
-        // Проверяем, что расписание действительно существует
+        // Преобразование строк в LocalDateTime
+        LocalDateTime parsedStartTime = LocalDateTime.parse(startTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        LocalDateTime parsedEndTime = LocalDateTime.parse(endTime, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+
         Schedule existingSchedule = scheduleService.getScheduleById(schedule.getId())
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
 
-        existingSchedule.setStartTime(schedule.getStartTime());
-        existingSchedule.setEndTime(schedule.getEndTime());
+        existingSchedule.setStartTime(parsedStartTime);
+        existingSchedule.setEndTime(parsedEndTime);
         existingSchedule.setFitnessClass(fcOpt.get());
 
         scheduleService.saveSchedule(existingSchedule);
 
         return "redirect:/web/admin/schedules";
     }
+
 
     // Удаление расписания
     @GetMapping("/delete/{id}")

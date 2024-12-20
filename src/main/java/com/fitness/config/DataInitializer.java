@@ -5,8 +5,8 @@ import com.fitness.entity.User;
 import com.fitness.service.RoleService;
 import com.fitness.service.UserService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         // Создание ролей, если они не существуют
         if (!roleService.findByName("ROLE_ADMIN").isPresent()) {
             Role adminRole = new Role();
@@ -42,14 +42,29 @@ public class DataInitializer implements CommandLineRunner {
             roleService.save(trainerRole);
         }
 
-        // Создание администратора, если не существует
-        if (!userService.getAllUsers().stream().anyMatch(u -> u.getUsername().equals("admin"))) {
+        // Проверка существующего администратора
+        User existingAdmin = userService.getAllUsers()
+                .stream()
+                .filter(u -> u.getUsername().equals("admin"))
+                .findFirst()
+                .orElse(null);
+
+        if (existingAdmin == null) {
+            // Создание администратора, если не существует
             User admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin")); // Зашифрованный пароль
             admin.setEmail("admin@fitness.com");
+            admin.setFirstName("Admin");
+            admin.setLastName("Admin");
+            admin.setPhoneNumber("+1234567890");
             userService.registerNewUser(admin, Set.of("ROLE_ADMIN"));
             System.out.println("Admin user created with username 'admin' and password 'admin'");
+        } else if (existingAdmin.getPassword() == null || existingAdmin.getPassword().isEmpty()) {
+            // Восстановление пароля администратора
+            existingAdmin.setPassword(passwordEncoder.encode("admin"));
+            userService.updateUser(existingAdmin, Set.of("ROLE_ADMIN"));
+            System.out.println("Admin password reset to 'admin'");
         }
     }
 }

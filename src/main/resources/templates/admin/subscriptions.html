@@ -5,6 +5,9 @@
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Подключение DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
@@ -18,7 +21,7 @@
   </div>
 
   <div th:if="${subscriptions != null and subscriptions.size() > 0}">
-    <table class="table table-striped table-bordered">
+    <table id="subscriptionsTable" class="table table-striped table-bordered">
       <thead class="table-dark">
       <tr>
         <th>Клиент</th>
@@ -48,7 +51,22 @@
   <div th:if="${subscriptions == null or subscriptions.size() == 0}" class="alert alert-info">Абонементы не найдены.</div>
 </div>
 
+<!-- Подключение jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- Подключение Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Подключение DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#subscriptionsTable').DataTable({
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ru.json'
+      }
+    });
+  });
+</script>
 </body>
 </html>

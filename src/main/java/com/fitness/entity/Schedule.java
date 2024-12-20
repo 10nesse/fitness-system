@@ -26,6 +26,7 @@ public class Schedule {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endTime;
 
     @ManyToOne
