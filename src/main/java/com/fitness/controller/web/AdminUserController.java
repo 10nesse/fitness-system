@@ -1,5 +1,7 @@
 package com.fitness.controller.web;
 
+import com.fitness.entity.Client;
+import com.fitness.entity.Trainer;
 import com.fitness.entity.User;
 import com.fitness.service.ClientService;
 import com.fitness.service.TrainerService;
@@ -49,31 +51,43 @@ public class AdminUserController {
 
     // Обработка создания нового пользователя
     @PostMapping("/create")
-    public String createUser(
-            @Valid @ModelAttribute("user") User user,
-            BindingResult bindingResult,
-            @RequestParam("roleNames") List<String> roleNames,
-            Model model
-    ) {
-        // Проверка валидации формы
+    public String createUser(@Valid @ModelAttribute("user") User user,
+                             @RequestParam("roleNames") Set<String> roleNames,
+                             BindingResult bindingResult,
+                             Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("allRoles", roleService.getAllRoles());
+            model.addAttribute("roles", roleService.getAllRoles());
             return "admin/create-user";
         }
 
-        // Проверка уникальности username
-        if (userService.existsByUsername(user.getUsername())) {
-            model.addAttribute("errorMessage", "Username is already taken");
-            model.addAttribute("allRoles", roleService.getAllRoles());
-            return "admin/create-user";
+        userService.registerNewUser(user, roleNames);
+
+        // Если среди ролей есть ROLE_TRAINER, создаём запись в таблице тренеров
+        if (roleNames.contains("ROLE_TRAINER")) {
+            Trainer trainer = new Trainer();
+            trainer.setUser(user);
+            trainer.setFirstName(user.getFirstName());
+            trainer.setLastName(user.getLastName());
+            trainer.setEmail(user.getEmail());
+            trainer.setPhoneNumber(user.getPhoneNumber());
+            trainerService.createTrainer(trainer);
         }
 
-        // Обработка выбранных ролей
-        Set<String> roles = new HashSet<>(roleNames);
-        userService.registerNewUser(user, roles);
+        // Если среди ролей есть ROLE_CLIENT, создаём запись в таблице клиентов
+        if (roleNames.contains("ROLE_CLIENT")) {
+            Client client = new Client();
+            client.setUser(user);
+            client.setFirstName(user.getFirstName());
+            client.setLastName(user.getLastName());
+            client.setEmail(user.getEmail());
+            client.setPhoneNumber(user.getPhoneNumber());
+            clientService.createClient(client);
+        }
 
         return "redirect:/web/admin/users";
     }
+
+
 
     // Форма редактирования пользователя
     @GetMapping("/edit/{id}")

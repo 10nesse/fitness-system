@@ -36,14 +36,14 @@ public class AdminFitnessClassController {
         return "admin/fitness-classes"; // Шаблон для отображения списка
     }
 
-    // Форма создания нового фитнес-класса
     @GetMapping("/create")
     public String createFitnessClassForm(Model model) {
         model.addAttribute("fitnessClass", new FitnessClass());
         List<Trainer> trainers = trainerService.getAllTrainers();
-        model.addAttribute("trainers", trainers); // Список тренеров для выбора
+        model.addAttribute("trainers", trainers); // Передача списка тренеров
         return "admin/create-fitness-class"; // Шаблон для создания
     }
+
 
     // Обработка создания фитнес-класса
     @PostMapping("/create")
