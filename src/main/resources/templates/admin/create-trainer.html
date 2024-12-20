@@ -1,47 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Create Trainer</title>
+  <title>Создать Тренера</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:fragment="content">
-  <h1>Create Trainer</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Создать Тренера</h1>
 
-  <p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red"></p>
+  <!-- Сообщение об ошибке -->
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
   <form th:action="@{/web/admin/trainers/create}" th:object="${trainer}" method="post">
-    <!-- Имя и Фамилия тренера -->
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" th:field="*{firstName}" required/><br/>
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Имя:</label>
+      <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required/>
+    </div>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" th:field="*{lastName}" required/><br/>
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Фамилия:</label>
+      <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required/>
+    </div>
 
-    <!-- Выбор пользователя -->
-    <label for="userSelect">Select User:</label>
-    <select id="userSelect" name="userId" required>
-      <option value="">-- Select User --</option>
-      <option th:each="u : ${allUsers}"
-              th:value="${u.id}"
-              th:text="${u.username}"></option>
-    </select><br/>
+    <div class="mb-3">
+      <label for="userSelect" class="form-label">Пользователь:</label>
+      <select id="userSelect" name="userId" class="form-select" required>
+        <option value="">-- Выберите пользователя --</option>
+        <option th:each="u : ${allUsers}"
+                th:value="${u.id}"
+                th:text="${u.username}"></option>
+      </select>
+    </div>
 
-    <!-- Специализация, Email, Телефон -->
-    <label for="specialization">Specialization:</label>
-    <input type="text" id="specialization" th:field="*{specialization}" required/><br/>
+    <div class="mb-3">
+      <label for="specialization" class="form-label">Специализация:</label>
+      <input type="text" id="specialization" th:field="*{specialization}" class="form-control" required/>
+    </div>
 
-    <label for="trainerEmail">Trainer Email:</label>
-    <input type="email" id="trainerEmail" th:field="*{email}" required/><br/>
+    <div class="mb-3">
+      <label for="trainerEmail" class="form-label">Email:</label>
+      <input type="email" id="trainerEmail" th:field="*{email}" class="form-control" required/>
+    </div>
 
-    <label for="phoneNumber">Phone:</label>
-    <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/><br/>
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label">Телефон:</label>
+      <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control"/>
+    </div>
 
-    <button type="submit">Create</button>
+    <button type="submit" class="btn btn-primary">Создать</button>
+    <a th:href="@{/web/admin/trainers}" class="btn btn-secondary">Назад к списку тренеров</a>
   </form>
-
-  <a th:href="@{/web/admin/trainers}">Back to Trainers</a>
 </div>
-<th:block th:replace="~{layout :: content}"/>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

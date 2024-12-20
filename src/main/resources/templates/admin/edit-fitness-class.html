@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Edit Fitness Class</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <title>Редактировать Занятие</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:fragment="content">
-  <h1>Edit Fitness Class</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Редактировать Занятие</h1>
 
-  <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
   <form th:action="@{/web/admin/fitness-classes/edit}" th:object="${fitnessClass}" method="post">
     <input type="hidden" th:field="*{id}"/>
 
-    <!-- Поле для выбора тренера -->
-    <label for="trainer">Trainer:</label>
-    <select id="trainer" name="trainerId">
-      <option th:each="trainer : ${trainers}"
-              th:value="${trainer.id}"
-              th:text="${trainer.firstName + ' ' + trainer.lastName}"
-              th:selected="${trainer.id} == ${fitnessClass.trainer.id}"></option>
-    </select><br/>
+    <div class="mb-3">
+      <label for="trainer" class="form-label">Тренер:</label>
+      <select id="trainer" name="trainerId" class="form-select" required>
+        <option th:each="trainer : ${trainers}"
+                th:value="${trainer.id}"
+                th:text="${trainer.firstName + ' ' + trainer.lastName}"
+                th:selected="${trainer.id == fitnessClass.trainer.id}"></option>
+      </select>
+    </div>
 
-    <!-- Поля для имени, описания и вместимости -->
-    <label for="name">Name:</label>
-    <input type="text" id="name" th:field="*{name}" required/><br/>
+    <div class="mb-3">
+      <label for="name" class="form-label">Название:</label>
+      <input type="text" id="name" th:field="*{name}" class="form-control" required/>
+    </div>
 
-    <label for="description">Description:</label>
-    <textarea id="description" th:field="*{description}" required></textarea><br/>
+    <div class="mb-3">
+      <label for="description" class="form-label">Описание:</label>
+      <textarea id="description" th:field="*{description}" class="form-control" required></textarea>
+    </div>
 
-    <label for="capacity">Capacity:</label>
-    <input type="number" id="capacity" th:field="*{capacity}" min="1" required/><br/>
+    <div class="mb-3">
+      <label for="capacity" class="form-label">Вместимость:</label>
+      <input type="number" id="capacity" th:field="*{capacity}" class="form-control" min="1" required/>
+    </div>
 
-    <button type="submit">Update</button>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a th:href="@{/web/admin/fitness-classes}" class="btn btn-secondary">Назад к списку занятий</a>
   </form>
-
-  <a th:href="@{/web/admin/fitness-classes}">Back to Fitness Classes</a>
 </div>
-<th:block th:replace="~{layout :: content}"/>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

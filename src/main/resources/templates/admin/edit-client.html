@@ -1,45 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Edit Client</title>
+  <title>Редактировать Клиента</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:fragment="content">
-  <h1>Edit Client</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Редактировать Клиента</h1>
 
-  <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+  <!-- Сообщение об ошибке -->
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
   <form th:action="@{/web/admin/clients/edit}" th:object="${client}" method="post">
     <input type="hidden" th:field="*{id}"/>
 
-    <!-- Выбор пользователя -->
-    <label for="userId">User:</label>
-    <select id="userId" name="userId" required>
-      <option value="">Select a User</option>
-      <option th:each="u : ${users}"
-              th:value="${u.id}"
-              th:selected="${client.user.id == u.id}"
-              th:text="${u.username}"></option>
-    </select><br/>
+    <div class="mb-3">
+      <label for="userId" class="form-label">Пользователь:</label>
+      <select id="userId" name="userId" class="form-select" required>
+        <option value="">Выберите пользователя</option>
+        <option th:each="u : ${users}"
+                th:value="${u.id}"
+                th:selected="${client.user.id == u.id}"
+                th:text="${u.username}"></option>
+      </select>
+    </div>
 
-    <!-- Поля для данных клиента -->
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" th:field="*{firstName}" required/><br/>
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Имя:</label>
+      <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required/>
+    </div>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" th:field="*{lastName}" required/><br/>
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Фамилия:</label>
+      <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required/>
+    </div>
 
-    <!-- Удалено поле Email -->
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label">Номер телефона:</label>
+      <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" required/>
+    </div>
 
-    <label for="phoneNumber">Phone Number:</label>
-    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required/><br/>
-
-    <button type="submit">Update</button>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a th:href="@{/web/admin/clients}" class="btn btn-secondary">Назад к списку клиентов</a>
   </form>
-
-  <p><a th:href="@{/web/admin/clients}">Back to Clients</a></p>
 </div>
-<th:block th:replace="~{layout :: content}"/>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

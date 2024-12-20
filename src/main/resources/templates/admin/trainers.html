@@ -1,49 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Trainers</title>
+  <title>Тренеры</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <!-- Подключение Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div th:fragment="content">
-  <h1>Trainers</h1>
+<div class="container mt-5">
+  <h1 class="mb-4">Тренеры</h1>
 
-  <p><a th:href="@{/web/home}">Back to Dashboard</a></p>
-  <p><a th:href="@{/web/admin/trainers/create}">Add New Trainer</a></p>
+  <div class="mb-3">
+    <a th:href="@{/web/admin/trainers/create}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Добавить Тренера
+    </a>
+    <a th:href="@{/web/home}" class="btn btn-secondary">Назад на Дашборд</a>
+  </div>
 
   <div th:if="${trainers != null and trainers.size() > 0}">
-    <table>
-      <thead>
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
       <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Username</th>
-        <th>Specialization</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Логин</th>
+        <th>Специализация</th>
         <th>Email</th>
-        <th>Phone Number</th>
-        <th>Actions</th>
+        <th>Телефон</th>
+        <th>Действия</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="trainer : ${trainers}">
-        <td th:text="${trainer.firstName}">FirstName</td>
-        <td th:text="${trainer.lastName}">LastName</td>
-        <td th:text="${trainer.user.username}">Username</td>
-        <td th:text="${trainer.specialization}">Specialization</td>
+        <td th:text="${trainer.firstName}">Имя</td>
+        <td th:text="${trainer.lastName}">Фамилия</td>
+        <td th:text="${trainer.user.username}">Логин</td>
+        <td th:text="${trainer.specialization}">Специализация</td>
         <td th:text="${trainer.email}">Email</td>
-        <td th:text="${trainer.phoneNumber}">Phone</td>
+        <td th:text="${trainer.phoneNumber}">Телефон</td>
         <td>
-          <a th:href="@{'/web/admin/trainers/edit/' + ${trainer.id}}">Edit</a>
-          <a th:href="@{'/web/admin/trainers/delete/' + ${trainer.id}}" onclick="return confirm('Are you sure?')">Delete</a>
+          <a th:href="@{'/web/admin/trainers/edit/' + ${trainer.id}}" class="btn btn-warning btn-sm">Редактировать</a>
+          <a th:href="@{'/web/admin/trainers/delete/' + ${trainer.id}}" class="btn btn-danger btn-sm"
+             onclick="return confirm('Вы уверены, что хотите удалить этого тренера?')">Удалить</a>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
-  <div th:if="${trainers == null or trainers.size() == 0}">
-    <p>No trainers found.</p>
-  </div>
+  <div th:if="${trainers == null or trainers.size() == 0}" class="alert alert-info">Тренеры не найдены.</div>
 </div>
-<th:block th:replace="~{layout :: content}"/>
+
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
