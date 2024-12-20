@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Расписание Абонементов</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Подключение DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
   <!-- Подключение Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body layout:decorate="~{layout}">
-<div layout:fragment="content" class="container mt-5">
-  <h1>Расписание Абонементов</h1>
+<body class="bg-light">
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Расписание Абонементов</h1>
+
   <!-- Сообщение об ошибке -->
   <div th:if="${errorMessage != null}">
     <div class="alert alert-danger" th:text="${errorMessage}"></div>
@@ -22,34 +25,14 @@
     <div class="alert alert-success" th:text="${successMessage}"></div>
   </div>
 
-
-  <!-- Кнопки навигации -->
-  <p>
+  <div class="mb-3">
     <a th:href="@{/web/home}" class="btn btn-secondary">
-      <i class="fas fa-arrow-left"></i> Назад
+      <i class="fas fa-arrow-left"></i> Назад на Дашборд
     </a>
-  </p>
+  </div>
 
-  <!-- Форма фильтрации -->
-  <form th:action="@{/web/client/subscription-schedules}" method="get" class="mb-4">
-    <div class="row">
-      <div class="col-md-4">
-        <label for="startDate" class="form-label">Дата начала:</label>
-        <input type="date" id="startDate" name="startDate" class="form-control" th:value="${startDate}"/>
-      </div>
-      <div class="col-md-4">
-        <label for="endDate" class="form-label">Дата окончания:</label>
-        <input type="date" id="endDate" name="endDate" class="form-control" th:value="${endDate}"/>
-      </div>
-      <div class="col-md-4 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Применить</button>
-      </div>
-    </div>
-  </form>
-
-  <!-- Таблица расписаний -->
-  <div th:if="${schedules != null and !schedules.isEmpty()}">
-    <table class="table table-striped table-bordered">
+  <div th:if="${schedules != null and schedules.size() > 0}">
+    <table id="schedulesTable" class="table table-striped table-bordered">
       <thead class="table-dark">
       <tr>
         <th>Фитнес-Класс</th>
@@ -77,17 +60,27 @@
       </tbody>
     </table>
   </div>
-  <div th:if="${schedules == null or schedules.isEmpty()}">
-    <div class="alert alert-info">Нет доступных расписаний.</div>
+  <div th:if="${schedules == null or schedules.size() == 0}" class="alert alert-info text-center">
+    Нет доступных расписаний.
   </div>
 </div>
 
+<!-- Подключение jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- Подключение Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
-        integrity="sha384-7+PpJdMWu/qh6TBC4sBlFIsJgx7RDRPgzF0ts4pu4eMDqsRxDD4K3PQHo4UvGYcE"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
-        integrity="sha384-Q3pWdFFzN3s44oAx5iF9ryS6kD2oO0wFblLkZd6zG/zmeQiFvZvy7ewFvz4J1PzF"
-        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Подключение DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#schedulesTable').DataTable({
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ru.json'
+      }
+    });
+  });
+</script>
 </body>
 </html>

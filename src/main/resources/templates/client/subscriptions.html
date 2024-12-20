@@ -1,32 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title layout:fragment="title">Мои Абонементы</title>
+  <title>Мои Абонементы</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Подключение DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
   <!-- Подключение Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body layout:decorate="~{layout}">
-<div layout:fragment="content" class="container mt-5">
-  <h1 class="mb-4">Мои Абонементы</h1>
+<body class="bg-light">
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Мои Абонементы</h1>
 
   <!-- Кнопка "Назад" -->
   <div class="mb-3">
     <a th:href="@{/web/home}" class="btn btn-secondary">
-      <i class="fas fa-arrow-left"></i> Назад
+      <i class="fas fa-arrow-left"></i> Назад на Дашборд
     </a>
   </div>
 
   <!-- Сообщение об отсутствии абонементов -->
-  <div th:if="${subscriptions == null or subscriptions.isEmpty()}">
-    <div class="alert alert-info">Нет активных абонементов.</div>
+  <div th:if="${subscriptions == null or subscriptions.isEmpty()}" class="alert alert-info text-center">
+    Нет активных абонементов.
   </div>
 
   <!-- Таблица с абонементами -->
   <div th:if="${subscriptions != null and !subscriptions.isEmpty()}">
-    <table class="table table-striped table-bordered">
+    <table id="subscriptionsTable" class="table table-striped table-bordered">
       <thead class="table-dark">
       <tr>
         <th>Фитнес-Класс</th>
@@ -40,14 +43,29 @@
         <td th:text="${subscription.fitnessClass.name}">Фитнес-Класс</td>
         <td th:text="${#temporals.format(subscription.startDate, 'yyyy-MM-dd')}">Дата Начала</td>
         <td th:text="${#temporals.format(subscription.endDate, 'yyyy-MM-dd')}">Дата Окончания</td>
-        <td th:text="${subscription.price}">Цена</td>
+        <td th:text="${subscription.price + ' ₽'}">Цена</td>
       </tr>
       </tbody>
     </table>
   </div>
 </div>
 
+<!-- Подключение jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <!-- Подключение Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Подключение DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#subscriptionsTable').DataTable({
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ru.json'
+      }
+    });
+  });
+</script>
 </body>
 </html>
