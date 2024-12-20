@@ -1,4 +1,4 @@
-package com.fitness.controller;
+package com.fitness.controller.web;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;

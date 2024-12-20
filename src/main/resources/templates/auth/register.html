@@ -6,62 +6,70 @@
     <!-- Подключение Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<div class="container mt-5">
-    <h1 class="mb-4">Регистрация</h1>
+<body class="bg-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h1 class="mb-4 text-center">Регистрация</h1>
 
-    <form th:action="@{/web/auth/register}" th:object="${user}" method="post" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="username" class="form-label">Имя пользователя:</label>
-            <input type="text" id="username" th:field="*{username}" class="form-control" required
-                   minlength="3" maxlength="20" pattern="^[a-zA-Z0-9._-]+$"
-                   placeholder="Введите имя пользователя (a-z, 0-9, ., _, -)"/>
-            <div class="invalid-feedback">
-                Имя пользователя должно быть от 3 до 20 символов и содержать только буквы, цифры, точки, подчёркивания и дефисы.
+                    <form th:action="@{/web/auth/register}" th:object="${user}" method="post" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя:</label>
+                            <input type="text" id="username" th:field="*{username}" class="form-control" required
+                                   minlength="3" maxlength="20" pattern="^[a-zA-Z0-9._-]+$"
+                                   placeholder="Введите имя пользователя (a-z, 0-9, ., _, -)"/>
+                            <div class="invalid-feedback">
+                                Имя пользователя должно быть от 3 до 20 символов и содержать только буквы, цифры, точки, подчёркивания и дефисы.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль:</label>
+                            <input type="password" id="password" th:field="*{password}" class="form-control" required
+                                   minlength="6" placeholder="Введите пароль"/>
+                            <div class="invalid-feedback">
+                                Пароль должен содержать не менее 6 символов.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">Имя:</label>
+                            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required
+                                   maxlength="50" placeholder="Введите ваше имя"/>
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите имя. Максимальная длина — 50 символов.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Фамилия:</label>
+                            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required
+                                   maxlength="50" placeholder="Введите вашу фамилию"/>
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите фамилию. Максимальная длина — 50 символов.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" id="email" th:field="*{email}" class="form-control" required
+                                   placeholder="Введите ваш email"/>
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите корректный email.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Телефон:</label>
+                            <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" required
+                                   maxlength="18" placeholder="+7 (___) ___-__-__"/>
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите телефон в формате: +7 (XXX) XXX-XX-XX.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Пароль:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" required
-                   minlength="6" placeholder="Введите пароль"/>
-            <div class="invalid-feedback">
-                Пароль должен содержать не менее 6 символов.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="firstName" class="form-label">Имя:</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required
-                   maxlength="50" placeholder="Введите ваше имя"/>
-            <div class="invalid-feedback">
-                Пожалуйста, укажите имя. Максимальная длина — 50 символов.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="lastName" class="form-label">Фамилия:</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required
-                   maxlength="50" placeholder="Введите вашу фамилию"/>
-            <div class="invalid-feedback">
-                Пожалуйста, укажите фамилию. Максимальная длина — 50 символов.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" required
-                   placeholder="Введите ваш email"/>
-            <div class="invalid-feedback">
-                Пожалуйста, укажите корректный email.
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Телефон:</label>
-            <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" required
-                   maxlength="18" placeholder="+7 (___) ___-__-__"/>
-            <div class="invalid-feedback">
-                Пожалуйста, укажите телефон в формате: +7 (XXX) XXX-XX-XX.
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-    </form>
+    </div>
 </div>
 
 <!-- Подключение Bootstrap JS -->
