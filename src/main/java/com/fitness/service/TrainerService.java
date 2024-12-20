@@ -21,6 +21,11 @@ public class TrainerService {
         this.userRepository = userRepository;
     }
 
+    public Optional<Trainer> findByUserId(Long userId) {
+        return trainerRepository.findByUserId(userId);
+    }
+
+
 
     public List<Trainer> getAllTrainers() {
         return trainerRepository.findAll();

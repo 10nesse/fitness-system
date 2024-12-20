@@ -1,58 +1,46 @@
 package com.fitness.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import jakarta.validation.ConstraintViolationException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Обработка ошибок валидации
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    /**
+     * Обработка исключения ResourceNotFoundException.
+     * Возвращает страницу 404 с сообщением об ошибке.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleResourceNotFound(ResourceNotFoundException ex, Model model) {
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error/404"; // Шаблон для страницы ошибки 404
     }
 
-    // Обработка ошибок ConstraintViolation
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleConstraintViolationExceptions(
-            ConstraintViolationException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getConstraintViolations().forEach(cv -> {
-            String path = cv.getPropertyPath().toString();
-            String message = cv.getMessage();
-            errors.put(path, message);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    /**
+     * Обработка исключения доступа (403 Forbidden).
+     * Возвращает страницу 403 с сообщением об ошибке.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDenied(AccessDeniedException ex, Model model) {
+        model.addAttribute("errorMessage", "У вас нет доступа к этой странице.");
+        return "error/403"; // Шаблон для страницы ошибки 403
     }
 
-    // Обработка ошибок типа аргумента
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        String message = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    /**
+     * Обработка любых других исключений.
+     * Возвращает страницу 500 с сообщением об ошибке.
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleGenericException(Exception ex, Model model) {
+        model.addAttribute("errorMessage", "Что-то пошло не так. Пожалуйста, попробуйте позже.");
+        model.addAttribute("details", ex.getMessage());
+        return "error/500"; // Шаблон для страницы ошибки 500
     }
-
-    // Обработка пользовательских исключений
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    }
-
-
+}

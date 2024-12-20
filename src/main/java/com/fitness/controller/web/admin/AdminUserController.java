@@ -56,24 +56,14 @@ public class AdminUserController {
                              BindingResult bindingResult,
                              Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roles", roleService.getAllRoles());
+            model.addAttribute("allRoles", roleService.getAllRoles());
             return "admin/create-user";
         }
 
+        // Сохранение пользователя и назначение ролей
         userService.registerNewUser(user, roleNames);
 
-        // Если среди ролей есть ROLE_TRAINER, создаём запись в таблице тренеров
-        if (roleNames.contains("ROLE_TRAINER")) {
-            Trainer trainer = new Trainer();
-            trainer.setUser(user);
-            trainer.setFirstName(user.getFirstName());
-            trainer.setLastName(user.getLastName());
-            trainer.setEmail(user.getEmail());
-            trainer.setPhoneNumber(user.getPhoneNumber());
-            trainerService.createTrainer(trainer);
-        }
-
-        // Если среди ролей есть ROLE_CLIENT, создаём запись в таблице клиентов
+        // Логика для создания записи в таблицах `Client` и `Trainer`
         if (roleNames.contains("ROLE_CLIENT")) {
             Client client = new Client();
             client.setUser(user);
@@ -84,8 +74,19 @@ public class AdminUserController {
             clientService.createClient(client);
         }
 
+        if (roleNames.contains("ROLE_TRAINER")) {
+            Trainer trainer = new Trainer();
+            trainer.setUser(user);
+            trainer.setFirstName(user.getFirstName());
+            trainer.setLastName(user.getLastName());
+            trainer.setEmail(user.getEmail());
+            trainer.setPhoneNumber(user.getPhoneNumber());
+            trainerService.createTrainer(trainer);
+        }
+
         return "redirect:/web/admin/users";
     }
+
 
 
 
@@ -100,31 +101,42 @@ public class AdminUserController {
     }
 
     @PostMapping("/edit")
-    public String updateUser(
-            @Valid @ModelAttribute("user") User user,
-            BindingResult bindingResult,
-            @RequestParam("roleNames") List<String> roleNames,
-            Model model
-    ) {
+    public String updateUser(@Valid @ModelAttribute("user") User user,
+                             BindingResult bindingResult,
+                             @RequestParam("roleNames") Set<String> roleNames,
+                             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("allRoles", roleService.getAllRoles());
             return "admin/edit-user";
         }
 
-        // Проверка уникальности username
-        Optional<User> userWithSameUsername = userService.findByUsername(user.getUsername());
-        if (userWithSameUsername.isPresent() && !userWithSameUsername.get().getId().equals(user.getId())) {
-            model.addAttribute("errorMessage", "Username is already taken");
-            model.addAttribute("allRoles", roleService.getAllRoles());
-            return "admin/edit-user";
+        // Проверка и обновление пользователя
+        userService.updateUser(user, roleNames);
+
+        // Логика для добавления записей в таблицы `Client` и `Trainer`, если роли добавлены
+        if (roleNames.contains("ROLE_CLIENT") && clientService.findByUserId(user.getId()).isEmpty()) {
+            Client client = new Client();
+            client.setUser(user);
+            client.setFirstName(user.getFirstName());
+            client.setLastName(user.getLastName());
+            client.setEmail(user.getEmail());
+            client.setPhoneNumber(user.getPhoneNumber());
+            clientService.createClient(client);
         }
 
-        // Обновление пользователя и связанных данных
-        Set<String> roles = new HashSet<>(roleNames);
-        userService.updateUser(user, roles);
+        if (roleNames.contains("ROLE_TRAINER") && trainerService.findByUserId(user.getId()).isEmpty()) {
+            Trainer trainer = new Trainer();
+            trainer.setUser(user);
+            trainer.setFirstName(user.getFirstName());
+            trainer.setLastName(user.getLastName());
+            trainer.setEmail(user.getEmail());
+            trainer.setPhoneNumber(user.getPhoneNumber());
+            trainerService.createTrainer(trainer);
+        }
 
         return "redirect:/web/admin/users";
     }
+
 
 
     // Обработка удаления пользователя

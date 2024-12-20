@@ -20,6 +20,11 @@ public class ClientService {
         this.userRepository = userRepository;
     }
 
+    public Optional<Client> findByUserId(Long userId) {
+        return clientRepository.findByUserId(userId);
+    }
+
+
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
