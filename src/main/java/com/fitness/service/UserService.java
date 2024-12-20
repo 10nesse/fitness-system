@@ -2,6 +2,8 @@ package com.fitness.service;
 
 import com.fitness.entity.Role;
 import com.fitness.entity.User;
+import com.fitness.repository.ClientRepository;
+import com.fitness.repository.TrainerRepository;
 import com.fitness.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
@@ -18,17 +20,26 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final TrainerRepository trainerRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, TrainerRepository trainerRepository, ClientRepository clientRepository) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
 
+        this.trainerRepository = trainerRepository;
+        this.clientRepository = clientRepository;
     }
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+
+    public List<User> getAllByRole(String roleName) {
+        return userRepository.findAllByRoles_Name(roleName);
     }
 
 
@@ -71,6 +82,33 @@ public class UserService implements UserDetailsService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+    public User updateUser(User user, Set<String> roleNames) {
+        // Преобразование Set<String> в Set<Role>
+        Set<Role> roles = roleNames.stream()
+                .map(roleService::findByName)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+
+        // Установить новые роли
+        user.setRoles(roles);
+
+        // Обновить связанные данные, если пользователь является клиентом или тренером
+        clientRepository.findByUser(user).ifPresent(client -> {
+            client.setFirstName(user.getFirstName());
+            client.setLastName(user.getLastName());
+            clientRepository.save(client);
+        });
+
+        trainerRepository.findByUser(user).ifPresent(trainer -> {
+            trainer.setFirstName(user.getFirstName());
+            trainer.setLastName(user.getLastName());
+            trainerRepository.save(trainer);
+        });
+
+        return userRepository.save(user);
+    }
+
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
@@ -79,28 +117,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
-    public User updateUser(User user, Set<String> roleNames) {
-        User existing = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Проверка username, email уже сделана в контроллере при необходимости
-        existing.setUsername(user.getUsername());
-        existing.setEmail(user.getEmail());
-
-        // Если пароль пустой, оставляем старый пароль
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existing.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        // Обновляем роли
-        Set<Role> roles = roleNames.stream()
-                .map(roleName -> roleService.findByName(roleName)
-                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
-                .collect(Collectors.toSet());
-        existing.setRoles(roles);
-
-        return userRepository.save(existing);
-    }
 
 
     // Реализация метода из UserDetailsService

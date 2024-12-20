@@ -1,74 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Управление Пользователями</title>
+  <title>Пользователи</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
   <!-- Подключение Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Пользовательский CSS -->
-  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-10">
-      <div class="card shadow">
-        <div class="card-body">
-          <h1 class="text-center mb-4">Управление Пользователями</h1>
+  <h1 class="mb-4">Пользователи</h1>
 
-          <!-- Ссылки навигации -->
-          <div class="d-flex justify-content-between mb-3">
-            <a th:href="@{/web/home}" class="btn btn-secondary">
-              <i class="fas fa-arrow-left"></i> Назад к Дашборду
-            </a>
-            <a th:href="@{/web/admin/users/create}" class="btn btn-primary">
-              <i class="fas fa-user-plus"></i> Добавить Пользователя
-            </a>
-          </div>
-
-          <!-- Проверка на наличие пользователей -->
-          <div th:if="${users != null && users.size() > 0}">
-            <table class="table table-striped table-bordered">
-              <thead class="table-dark">
-              <tr>
-                <th>Имя пользователя</th>
-                <th>Email</th>
-                <th>Роли</th>
-                <th class="text-center">Действия</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr th:each="user : ${users}">
-                <td th:text="${user.username}">Имя пользователя</td>
-                <td th:text="${user.email}">Email</td>
-                <td>
-                  <span th:each="role : ${user.roles}" th:text="${role.displayName} + ' '"></span>
-                </td>
-                <td class="text-center">
-                  <a th:href="@{'/web/admin/users/edit/' + ${user.id}}" class="btn btn-warning btn-sm">
-                    <i class="fas fa-edit"></i> Редактировать
-                  </a>
-                  <a th:href="@{'/web/admin/users/delete/' + ${user.id}}"
-                     class="btn btn-danger btn-sm"
-                     onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
-                    <i class="fas fa-trash-alt"></i> Удалить
-                  </a>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div th:if="${users == null || users.size() == 0}" class="alert alert-info text-center">
-            <p>Пользователи не найдены.</p>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="mb-3">
+    <a th:href="@{/web/admin/users/create}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Добавить Пользователя
+    </a>
+    <a th:href="@{/web/home}" class="btn btn-secondary">Назад на Дашборд</a>
   </div>
+
+  <div th:if="${users != null and users.size() > 0}">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+      <tr>
+        <th>Имя пользователя</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Email</th>
+        <th>Телефон</th>
+        <th>Роли</th>
+        <th>Действия</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.username}">Имя пользователя</td>
+        <td th:text="${user.firstName}">Имя</td>
+        <td th:text="${user.lastName}">Фамилия</td>
+        <td th:text="${user.email}">Email</td>
+        <td th:text="${user.phoneNumber}">Телефон</td>
+        <td>
+          <span th:each="role : ${user.roles}" th:text="${role.displayName} + ' '"></span>
+        </td>
+        <td>
+          <a th:href="@{'/web/admin/users/edit/' + ${user.id}}" class="btn btn-warning btn-sm">Редактировать</a>
+          <a th:href="@{'/web/admin/users/delete/' + ${user.id}}" class="btn btn-danger btn-sm"
+             onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">Удалить</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${users == null or users.size() == 0}" class="alert alert-info">Пользователи не найдены.</div>
 </div>
 
 <!-- Подключение Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Подключение Font Awesome -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </body>
 </html>

@@ -10,6 +10,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -26,8 +28,9 @@ public class AdminClientController {
 
     @GetMapping
     public String listClients(Model model) {
-        model.addAttribute("clients", clientService.getAllClients());
-        return "admin/clients"; // Страница списка клиентов
+        List<User> clients = userService.getAllByRole("ROLE_CLIENT");
+        model.addAttribute("clients", clients);
+        return "admin/clients";
     }
 
     @GetMapping("/create")

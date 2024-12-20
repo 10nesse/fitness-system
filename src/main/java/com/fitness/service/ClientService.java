@@ -45,6 +45,19 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
+    public void addOrUpdateClient(User user) {
+        Client client = clientRepository.findByUser(user).orElse(new Client());
+        client.setUser(user);
+        client.setFirstName(user.getFirstName());
+        client.setLastName(user.getLastName());
+        client.setEmail(user.getEmail());
+        client.setPhoneNumber(user.getPhoneNumber());
+        clientRepository.save(client);
+    }
+    public void removeClient(User user) {
+        clientRepository.findByUser(user).ifPresent(clientRepository::delete);
+    }
+
     public Client updateClient(Client client) {
         Client existingClient = clientRepository.findById(client.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found with id: " + client.getId()));

@@ -1,6 +1,8 @@
 package com.fitness.controller.web;
 
+import com.fitness.entity.Client;
 import com.fitness.entity.User;
+import com.fitness.service.ClientService;
 import com.fitness.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,11 @@ import java.util.Set;
 public class WebAuthController {
 
     private final UserService userService;
+    private final ClientService clientService;
 
-    public WebAuthController(UserService userService) {
+    public WebAuthController(UserService userService, ClientService clientService) {
         this.userService = userService;
+        this.clientService = clientService;
     }
 
     @GetMapping("/login")
@@ -31,18 +35,26 @@ public class WebAuthController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, Model model) {
-        // Проверяем, нет ли такого пользователя
+        // Проверяем, есть ли такой пользователь
         if (userService.existsByUsername(user.getUsername())) {
-            model.addAttribute("errorMessage", "Username is already taken");
-            model.addAttribute("user", user);
+            model.addAttribute("errorMessage", "Имя пользователя уже занято.");
             return "auth/register";
         }
 
-        // Допустим, по умолчанию будем давать ROLE_CLIENT
+        // Устанавливаем роль клиента
         Set<String> roles = Set.of("ROLE_CLIENT");
         userService.registerNewUser(user, roles);
 
-        // После успешной регистрации перенаправим на страницу логина
+        // Автоматически добавляем его в таблицу клиентов
+        Client client = new Client();
+        client.setUser(user);
+        client.setFirstName(user.getFirstName());
+        client.setLastName(user.getLastName());
+        client.setEmail(user.getEmail());
+        client.setPhoneNumber(user.getPhoneNumber());
+        clientService.createClient(client);
+
         return "redirect:/web/auth/login";
     }
+
 }

@@ -1,6 +1,8 @@
 package com.fitness.controller.web;
 
 import com.fitness.entity.User;
+import com.fitness.service.ClientService;
+import com.fitness.service.TrainerService;
 import com.fitness.service.UserService;
 import com.fitness.service.RoleService;
 import org.springframework.stereotype.Controller;
@@ -20,10 +22,14 @@ public class AdminUserController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final ClientService clientService;
+    private final TrainerService trainerService;
 
-    public AdminUserController(UserService userService, RoleService roleService) {
+    public AdminUserController(UserService userService, RoleService roleService, ClientService clientService, TrainerService trainerService) {
         this.userService = userService;
         this.roleService = roleService;
+        this.clientService = clientService;
+        this.trainerService = trainerService;
     }
 
     // Отображение списка пользователей
@@ -79,7 +85,6 @@ public class AdminUserController {
         return "admin/edit-user";
     }
 
-    // Обработка обновления пользователя
     @PostMapping("/edit")
     public String updateUser(
             @Valid @ModelAttribute("user") User user,
@@ -100,11 +105,13 @@ public class AdminUserController {
             return "admin/edit-user";
         }
 
+        // Обновление пользователя и связанных данных
         Set<String> roles = new HashSet<>(roleNames);
         userService.updateUser(user, roles);
 
         return "redirect:/web/admin/users";
     }
+
 
     // Обработка удаления пользователя
     @GetMapping("/delete/{id}")

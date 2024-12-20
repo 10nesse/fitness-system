@@ -27,8 +27,9 @@ public class AdminTrainerController {
 
     @GetMapping
     public String listTrainers(Model model) {
-        model.addAttribute("trainers", trainerService.getAllTrainers());
-        return "admin/trainers"; // страница со списком тренеров
+        List<User> trainers = userService.getAllByRole("ROLE_TRAINER");
+        model.addAttribute("trainers", trainers);
+        return "admin/trainers";
     }
 
     @GetMapping("/create")

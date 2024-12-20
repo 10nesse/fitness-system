@@ -34,6 +34,20 @@ public class TrainerService {
         return trainerRepository.save(trainer);
     }
 
+    public void addOrUpdateTrainer(User user) {
+        Trainer trainer = trainerRepository.findByUser(user).orElse(new Trainer());
+        trainer.setUser(user);
+        trainer.setFirstName(user.getFirstName());
+        trainer.setLastName(user.getLastName());
+        trainer.setEmail(user.getEmail());
+        trainer.setPhoneNumber(user.getPhoneNumber());
+        trainerRepository.save(trainer);
+    }
+
+    public void removeTrainer(User user) {
+        trainerRepository.findByUser(user).ifPresent(trainerRepository::delete);
+    }
+
     public void deleteById(Long id) {
         trainerRepository.deleteById(id);
     }
