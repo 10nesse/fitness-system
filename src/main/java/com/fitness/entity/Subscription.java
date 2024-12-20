@@ -38,9 +38,6 @@ public class Subscription {
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление фитнес-класса
     private FitnessClass fitnessClass;
 
-    @OneToOne(mappedBy = "subscription", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Payment payment;
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = true)

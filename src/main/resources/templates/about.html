@@ -3,47 +3,66 @@
 <head>
   <title>О Авторе</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+      font-family: 'Arial', sans-serif;
+    }
+    .card {
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(45deg, #007bff, #0056b3);
+    }
+    .btn-secondary {
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    .btn-secondary:hover {
+      transform: scale(1.05);
+      background-color: #6c757d;
+    }
+    img {
+      transition: transform 0.3s ease;
+    }
+    img:hover {
+      transform: scale(1.1);
+    }
+  </style>
 </head>
-<body class="bg-light">
-<div class="container mt-5">
+<body class="bg-light d-flex align-items-center vh-100">
+<div class="container">
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <div class="card shadow-lg">
-        <div class="card-header bg-primary text-white text-center">
+        <div class="card-header text-white text-center">
           <h1 class="mb-0">О Авторе</h1>
         </div>
-        <div class="card-body">
-          <p>
-            <strong>ФИО:</strong> Иванов Иван Иванович
-          </p>
-          <p>
-            <strong>Учебное заведение:</strong> Национальный исследовательский университет ИТМО, группа АБ-202
-          </p>
-          <p>
-            <strong>Контактные данные:</strong>
-          <ul>
-            <li>Email: <a href="mailto:ivanov@example.com">ivanov@example.com</a></li>
-            <li>GitHub: <a href="https://github.com/ivanov-profile" target="_blank">github.com/ivanov-profile</a></li>
-            <li>Телефон: +7 (123) 456-78-90</li>
+        <div class="card-body text-center">
+          <!-- Фотография автора -->
+          <img src="https://avatars.githubusercontent.com/u/55355937?s=400&u=4aed9214f530fb45b924f699251b90319fa5d218&v=4" alt="Фото автора" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+
+          <p><strong>ФИО:</strong> Маширов Даниил Александрович</p>
+          <p><strong>Учебное заведение:</strong> Финансовый университет при Правительстве РФ, группа ПИ22-2</p>
+          <p><strong>Контактные данные:</strong></p>
+          <ul class="list-unstyled">
+            <li>Email: <a href="mailto:mashirovdanila@mail.ru">mashirovdanila@mail.ru</a></li>
+            <li>GitHub: <a href="https://github.com/10nesse" target="_blank">github.com/10nesse</a></li>
+            <li>Телефон: +7 (964) 508-17-97</li>
           </ul>
-          </p>
-          <p>
-            <strong>Опыт работы с технологиями:</strong>
-          <ul>
+          <p><strong>Опыт работы с технологиями:</strong></p>
+          <ul class="list-unstyled">
             <li>Spring Boot: реализация архитектуры бэкенда, настройка REST API и ORM с использованием Hibernate.</li>
             <li>Thymeleaf: разработка интерфейса и интеграция с контроллерами Spring.</li>
-            <li>PostgreSQL: проектирование и работа с базой данных для управления сущностями системы.</li>
+            <li>MySQL: проектирование и работа с базой данных для управления сущностями системы.</li>
             <li>Bootstrap: создание адаптивного интерфейса пользователя.</li>
           </ul>
-          </p>
-          <p>
-            <strong>Период работы над проектом:</strong>
-          <ul>
-            <li>Начало работ: 01 сентября 2024 года</li>
+          <p><strong>Период работы над проектом:</strong></p>
+          <ul class="list-unstyled">
+            <li>Начало работ: 09 октября 2024 года</li>
             <li>Завершение работ: 20 декабря 2024 года</li>
           </ul>
-          </p>
         </div>
         <div class="card-footer text-center">
           <a th:href="@{/web/home}" class="btn btn-secondary">
