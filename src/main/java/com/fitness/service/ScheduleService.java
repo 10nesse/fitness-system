@@ -23,8 +23,6 @@ public class ScheduleService {
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
-    @Autowired
-    private FitnessClassService fitnessClassService;
 
     @Autowired
     private RegistrationRepository registrationRepository;

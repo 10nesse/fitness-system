@@ -1,6 +1,7 @@
 package com.fitness.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,16 +32,19 @@ public class Subscription {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление клиента
+    @JsonIgnore
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "fitness_class_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление фитнес-класса
+    @JsonIgnore
     private FitnessClass fitnessClass;
 
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление расписания
+    @JsonIgnore
     private Schedule schedule;
 }

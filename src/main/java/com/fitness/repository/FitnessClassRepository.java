@@ -18,6 +18,4 @@ public interface FitnessClassRepository extends JpaRepository<FitnessClass, Long
     Optional<FitnessClass> findByIdAndTrainer(Long id, Trainer trainer);
     List<FitnessClass> findByTrainerUserUsername(String username);
 
-
-
 }

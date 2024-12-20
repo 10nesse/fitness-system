@@ -18,15 +18,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     long countByClient_Id(Long clientId);
 
-    List<Schedule> findByFitnessClassIn(List<FitnessClass> fitnessClasses);
-
-    boolean existsByClient_Id(Long clientId);
 
     long countBySchedule_Id(Long scheduleId);
-
-    boolean existsByClientAndSchedule(Client client, Schedule schedule);
-
-
 
 
 }

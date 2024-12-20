@@ -1,5 +1,6 @@
 package com.fitness.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,10 +22,12 @@ public class Registration {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление клиента
+    @JsonIgnore
     private Client client;
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление расписания
+    @JsonIgnore
     private Schedule schedule;
 }

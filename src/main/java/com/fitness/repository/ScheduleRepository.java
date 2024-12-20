@@ -26,10 +26,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByFitnessClassInAndStartTimeBetween(List<FitnessClass> fitnessClasses, LocalDateTime start, LocalDateTime end);
 
 
-
-
-
-
     // Поиск по периоду
     List<Schedule> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 

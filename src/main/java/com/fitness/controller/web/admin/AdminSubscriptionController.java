@@ -1,5 +1,5 @@
 // src/main/java/com/fitness/controller/web/WebSubscriptionController.java
-package com.fitness.controller.web;
+package com.fitness.controller.web.admin;
 
 import com.fitness.entity.Client;
 import com.fitness.entity.FitnessClass;

@@ -1,4 +1,4 @@
-package com.fitness.controller.web;
+package com.fitness.controller.web.admin;
 
 import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Schedule;

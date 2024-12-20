@@ -1,5 +1,6 @@
 package com.fitness.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -35,11 +36,14 @@ public class FitnessClass {
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Каскадное удаление тренера
+    @JsonIgnore
     private Trainer trainer;
 
     @OneToMany(mappedBy = "fitnessClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Schedule> schedules;
 
     @OneToMany(mappedBy = "fitnessClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Subscription> subscriptions;
 }

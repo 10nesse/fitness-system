@@ -1,4 +1,4 @@
-package com.fitness.controller.web;
+package com.fitness.controller.web.trainer;
 
 import com.fitness.dto.ScheduleWithClientsDTO;
 import com.fitness.entity.Schedule;

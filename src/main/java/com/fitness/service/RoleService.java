@@ -28,11 +28,15 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    // Создание новой роли (опционально)
-    public Role createRole(String name) {
-        Role role = new Role();
-        role.setName(name);
-        return roleRepository.save(role);
+    public void deleteByName(String name) {
+        roleRepository.deleteByName(name);
     }
+
+
+
+    public List<Role> findAll() {
+        return roleRepository.findAll();
+    }
+
 
 }

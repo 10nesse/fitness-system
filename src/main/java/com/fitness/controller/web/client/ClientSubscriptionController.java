@@ -1,4 +1,4 @@
-package com.fitness.controller.web;
+package com.fitness.controller.web.client;
 
 import com.fitness.entity.Subscription;
 import com.fitness.entity.Client;

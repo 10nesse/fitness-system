@@ -1,9 +1,11 @@
-package com.fitness.controller.web;
+package com.fitness.controller.web.client;
 
-import com.fitness.entity.Trainer;
+import com.fitness.entity.Client;
 import com.fitness.entity.User;
-import com.fitness.service.TrainerService;
+import com.fitness.service.ClientService;
 import com.fitness.service.UserService;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,88 +15,78 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/web/trainer/profile")
-public class TrainerProfileController {
-    private final TrainerService trainerService;
+@RequestMapping("/web/client/profile")
+public class ClientProfileController {
+
+    private final ClientService clientService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public TrainerProfileController(TrainerService trainerService, UserService userService, PasswordEncoder passwordEncoder) {
-        this.trainerService = trainerService;
+    public ClientProfileController(ClientService clientService, UserService userService, PasswordEncoder passwordEncoder) {
+        this.clientService = clientService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Просмотр профиля тренера.
-     */
+    // Просмотр профиля клиента
     @GetMapping
     public String viewProfile(Model model, Authentication authentication) {
-        String username = authentication.getName(); // Получаем текущего пользователя
-        Trainer trainer = trainerService.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Тренер не найден"));
-        model.addAttribute("trainer", trainer);
-        return "trainer/profile";
+        String username = authentication.getName(); // Получаем username
+        Client client = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        model.addAttribute("client", client);
+        return "client/profile";
     }
 
-    /**
-     * Форма редактирования профиля тренера.
-     */
+    // Форма редактирования профиля
     @GetMapping("/edit")
     public String editProfileForm(Model model, Authentication authentication) {
         String username = authentication.getName();
-        Trainer trainer = trainerService.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Тренер не найден"));
-        model.addAttribute("trainer", trainer);
-        return "trainer/edit-profile";
+        Client client = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        model.addAttribute("client", client);
+        return "client/edit-profile";
     }
 
-    /**
-     * Обработка обновления профиля тренера.
-     */
+    // Обработка обновления профиля
     @PostMapping("/edit")
     public String updateProfile(
-            @Valid @ModelAttribute("trainer") Trainer trainer,
+            @Valid @ModelAttribute("client") Client client,
             BindingResult bindingResult,
             Authentication authentication,
             Model model
     ) {
         if (bindingResult.hasErrors()) {
-            return "trainer/edit-profile";
+            return "client/edit-profile";
         }
 
         String username = authentication.getName();
-        Trainer existingTrainer = trainerService.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Тренер не найден"));
+        Client existingClient = clientService.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
 
-        // Обновление данных профиля
-        existingTrainer.setFirstName(trainer.getFirstName());
-        existingTrainer.setLastName(trainer.getLastName());
-        existingTrainer.setSpecialization(trainer.getSpecialization());
-        existingTrainer.setPhoneNumber(trainer.getPhoneNumber());
-        trainerService.saveTrainer(existingTrainer);
+        // Обновление полей
+        existingClient.setFirstName(client.getFirstName());
+        existingClient.setLastName(client.getLastName());
+        existingClient.setPhoneNumber(client.getPhoneNumber());
+        // Обновление других полей по необходимости
 
-        return "redirect:/web/trainer/profile";
+        clientService.saveClient(existingClient);
+
+        return "redirect:/web/client/profile";
     }
 
-    /**
-     * Форма изменения пароля.
-     */
+    // Форма изменения пароля
     @GetMapping("/change-password")
     public String showChangePasswordForm(Model model) {
         model.addAttribute("passwordForm", new PasswordForm());
-        return "trainer/change-password";
+        return "client/change-password";
     }
 
-    /**
-     * Обработка изменения пароля.
-     */
+    // Обработка изменения пароля
     @PostMapping("/change-password")
     public String changePassword(
             @Valid @ModelAttribute("passwordForm") PasswordForm passwordForm,
@@ -103,24 +95,28 @@ public class TrainerProfileController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
-            return "trainer/change-password";
+            return "client/change-password";
         }
 
         if (!passwordForm.isPasswordsMatching()) {
             bindingResult.rejectValue("confirmPassword", "error.passwordForm", "Пароли не совпадают");
-            return "trainer/change-password";
+            return "client/change-password";
         }
 
         String username = authentication.getName();
-        Trainer trainer = trainerService.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Тренер не найден"));
+        Optional<Client> clientOpt = clientService.findByUserUsername(username);
+        if (clientOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Client not found");
+            return "client/change-password";
+        }
 
-        User user = trainer.getUser();
+        Client client = clientOpt.get();
+        User user = client.getUser();
 
         // Проверка старого пароля
         if (!passwordEncoder.matches(passwordForm.getOldPassword(), user.getPassword())) {
             bindingResult.rejectValue("oldPassword", "error.passwordForm", "Неверный старый пароль");
-            return "trainer/change-password";
+            return "client/change-password";
         }
 
         // Установка нового пароля
@@ -128,12 +124,11 @@ public class TrainerProfileController {
         userService.saveUser(user);
 
         model.addAttribute("successMessage", "Пароль успешно изменен");
-        return "trainer/change-password";
+        return "client/change-password";
     }
 
-    /**
-     * Класс для формы изменения пароля.
-     */
+
+    // Внутренний класс для формы изменения пароля
     public static class PasswordForm {
         @NotNull(message = "Старый пароль обязателен")
         private String oldPassword;
@@ -145,6 +140,8 @@ public class TrainerProfileController {
         @NotNull(message = "Подтверждение пароля обязательно")
         @Size(min = 6, message = "Пароль должен быть минимум 6 символов")
         private String confirmPassword;
+
+        // Геттеры и сеттеры
 
         public String getOldPassword() {
             return oldPassword;
@@ -170,6 +167,7 @@ public class TrainerProfileController {
             this.confirmPassword = confirmPassword;
         }
 
+        // Дополнительная валидация: проверка совпадения нового пароля и подтверждения
         public boolean isPasswordsMatching() {
             return newPassword != null && newPassword.equals(confirmPassword);
         }

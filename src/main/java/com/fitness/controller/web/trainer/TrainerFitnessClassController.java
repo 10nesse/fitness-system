@@ -1,5 +1,5 @@
 // src/main/java/com/fitness/controller/web/TrainerFitnessClassController.java
-package com.fitness.controller.web;
+package com.fitness.controller.web.trainer;
 
 import com.fitness.entity.FitnessClass;
 import com.fitness.entity.Trainer;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import jakarta.validation.Valid;
